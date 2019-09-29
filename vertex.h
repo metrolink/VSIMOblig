@@ -1,14 +1,14 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include <iostream>
-#include "vector3d.h"
-#include "vector2d.h"
 #include "gltypes.h"
-#include <iostream>
+#include "vector2d.h"
+#include "vector3d.h"
 #include <fstream>
+#include <iostream>
 
-class Vertex {
+class Vertex
+{
 public:
     Vertex();
     Vertex(float x, float y, float z, float r, float g, float b);
@@ -16,10 +16,10 @@ public:
     ~Vertex();
 
     //! Overloaded ostream operator which writes all vertex data on an open textfile stream
-    friend std::ostream& operator<< (std::ostream&, const Vertex&);
+    friend std::ostream &operator<<(std::ostream &, const Vertex &);
 
     //! Overloaded ostream operator which reads all vertex data from an open textfile stream
-    friend std::istream& operator>> (std::istream&, Vertex&);
+    friend std::istream &operator>>(std::istream &, Vertex &);
 
     void set_xyz(GLfloat *xyz);
     void set_xyz(GLfloat x, GLfloat y, GLfloat z);
@@ -32,6 +32,8 @@ public:
     void set_st(GLfloat *st);
     void set_st(GLfloat s, GLfloat t);
     void set_uv(GLfloat u, GLfloat v);
+
+    gsl::Vector3D XYZ() const;
 
 private:
     gsl::Vector3D mXYZ;

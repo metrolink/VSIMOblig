@@ -16,7 +16,7 @@ class QOpenGLContext;
 class Shader;
 class TriangleSurface;
 class MainWindow;
-
+typedef gsl::Vector3D vec3;
 /// This inherits from QWindow to get access to the Qt functionality and
 /// OpenGL surface.
 /// We also inherit from QOpenGLFunctions, to get access to the OpenGL functions
@@ -35,6 +35,7 @@ public:
 
     void checkForGLerrors();
 
+    bool detectPlayer();
 private slots:
     void render();
 
@@ -44,6 +45,16 @@ private:
     float mPlayerSpeed{3.f};
     gsl::Vector3D mDesiredVelocity{0, 0, 0};
     void calculateKeyInputs();
+    bool playerCaught{false};
+    std::vector<gsl::Vector3D> mSurfacePoints;
+
+    TriangleSurface *mNPC;
+    float mNPCSpeed{1.5};
+    unsigned int curNode{1};
+    gsl::Vector3D startLoc;
+    std::vector<gsl::Vector3D> bezierPoints;
+    float t{0};
+    bool dir = true;
 
     void init();
     void setCameraSpeed(float value);
@@ -93,6 +104,12 @@ private:
     void handleInput();
 
     void consumeMovementInput(float deltaTime);
+
+    void moveAlongLine(float deltaTime);
+
+    void chasePlayer();
+
+    vec3 barycentricCoordinates(const vec3 &pointA, const vec3 &pointB, const vec3 &pointC);
 
 protected:
     //The QWindow that we inherit from has these functions to capture

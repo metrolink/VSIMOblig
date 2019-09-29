@@ -1,7 +1,5 @@
 #include "beziercurve.h"
-#include "Objects/gameobject.h"
-#include "Shaders/shader.h"
-#include "jmath.h"
+#include "gsl_math.h"
 #include <cmath>
 BezierCurve::BezierCurve(std::vector<vec3> controlPoints, int degree) : b{controlPoints}
 {
@@ -14,25 +12,14 @@ BezierCurve::BezierCurve(std::vector<vec3> controlPoints, int degree) : b{contro
     for (double t{1.f}, step{0.05}; t > 0.f; t -= step)
     {
         vec3 point = Bezier(t, degree);
-        mVertices.push_back({point.getX(), point.getY(), point.getZ(), 0.f, 1.f, 0.f});
+        mVertices.push_back({point.getX(), point.getY(), point.getZ(), 1.f, 0.f, 0.f});
         points.push_back(point); // points in world space
     }
-    mVertices.push_back({b[0].getX(), b[0].getY(), b[0].getZ(), 0.f, 1.f, 0.f});
+    mVertices.push_back({b[0].getX(), b[0].getY(), b[0].getZ(), 1.f, 0.f, 0.f});
 }
-void BezierCurve::move(const vec3 &loc)
-{
-    mTransMatrix.setToIdentity();
-    mTransMatrix.translate(loc);
-}
-void BezierCurve::setColor(float r, float g, float b)
-{
-    mShaderProgram->use();
-    mShaderProgram->setVec3("objectColor", vec3(r, g, b));
-}
-void BezierCurve::init(Shader *shader)
-{
-    VisualObject::init(shader);
 
+void BezierCurve::init()
+{
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
@@ -58,9 +45,7 @@ void BezierCurve::init(Shader *shader)
 
 void BezierCurve::draw()
 {
-    mShaderProgram->use();
     glBindVertexArray(mVAO);
-    glUniformMatrix4fv(mShaderProgram->mMatrixUniform, 1, GL_FALSE, getModelMatrix().constData());
     glDrawArrays(GL_LINE_STRIP, 0, mVertices.size());
 }
 /**
@@ -71,7 +56,7 @@ void BezierCurve::draw()
 vec3 BezierCurve::Bezier(float t, int degree)
 {
     std::vector<vec3> c{b};
-    t = JMath::clamp(t, 0, 1); // clamp t to 0-1 since we don't care about extended bezier curves.
+    t = gsl::clamp(t, 0, 1); // clamp t to 0-1 since we don't care about extended bezier curves.
     for (int k{1}; k <= degree; k++)
     {
         for (int i{0}; i < degree - k + 1; i++)
@@ -85,8 +70,9 @@ std::vector<vec3> BezierCurve::getPoints()
     std::vector<vec3> worldPoints;
     for (vec3 point : points)
     {
-        vec4 point4d = vec4(point, 1) * getModelMatrix();
-        worldPoints.push_back(point4d);
+        vec4 point4d = getModelMatrix() * vec4(point, 1);
+        vec3 point3d = vec3(point4d.x / point4d.w, point4d.y / point4d.w, point4d.z / point4d.w);
+        worldPoints.push_back(point3d);
     }
     return worldPoints;
 }

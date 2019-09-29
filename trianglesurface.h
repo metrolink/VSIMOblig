@@ -17,6 +17,7 @@ public:
     void writeFile(std::string filename);
     void construct();
     void createSurface();
+    std::vector<gsl::Vector3D> getTrianglePoints();
 };
 
 #endif //TRIANGLESURFACE_H
