@@ -3,7 +3,7 @@
 #include "octahedronball.h"
 Tree::Tree()
 {
-    std::string cylinder = "../GSOpenGL2019/Assets/Cylinder.txt";
+    std::string cylinder = "../VSIMOblig/Assets/Cylinder.txt";
     readFile(cylinder);
     VisualObject::move(gsl::Vector3D(-1.5, 0, 3.5));
     scale(gsl::Vector3D(0.1, 0.1, 1));

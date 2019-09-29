@@ -75,9 +75,9 @@ void RenderWindow::init() {
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
-    mShaderProgram[0] = new Shader("../GSOpenGL2019/plainvertex.vert", "../GSOpenGL2019/plainfragment.frag");
+    mShaderProgram[0] = new Shader("../VSIMOblig/plainvertex.vert", "../VSIMOblig/plainfragment.frag");
     qDebug() << "Plain shader program id: " << mShaderProgram[0]->getProgram();
-    mShaderProgram[1] = new Shader("../GSOpenGL2019/texturevertex.vert", "../GSOpenGL2019/texturefragmet.frag");
+    mShaderProgram[1] = new Shader("../VSIMOblig/texturevertex.vert", "../VSIMOblig/texturefragmet.frag");
     qDebug() << "Texture shader program id: " << mShaderProgram[1]->getProgram();
 
     setupPlainShader(0);
@@ -85,7 +85,7 @@ void RenderWindow::init() {
 
     //**********************  Texture stuff: **********************
     //    mTexture[0] = new Texture();
-    //    mTexture[1] = new Texture("../GSOpenGL2019/Assets/hund.bmp");
+    //    mTexture[1] = new Texture("../VSIMOblig/Assets/hund.bmp");
 
     //    //Set the textures loaded to a texture unit
     //    glActiveTexture(GL_TEXTURE0);
@@ -97,14 +97,14 @@ void RenderWindow::init() {
     VisualObject *temp = new XYZ();
     mVisualObjects.push_back(temp);
 
-    TriangleSurface *mSurface = new TriangleSurface("../GSOpenGL2019/Assets/triangles.txt");
+    TriangleSurface *mSurface = new TriangleSurface("../VSIMOblig/Assets/triangles.txt");
     mVisualObjects.push_back(mSurface);
     //    mSurface->createSurface();
     //    mSurface->move(gsl::Vector3D(-3, 0, -3));
     //    mSurface->scale(gsl::Vector3D(3, 1, 3));
     //    mSurfacePoints = mSurface->getTrianglePoints(); // Getting this here since we never plan to change mSurface at any point.
     //    // Creating the player object
-    //    std::string cylinder = "../GSOpenGL2019/Assets/Cylinder.txt";
+    //    std::string cylinder = "../VSIMOblig/Assets/Cylinder.txt";
     //    mVisualObjects.push_back(mSurface);
     //    mPlayer = new TriangleSurface();
     //    mPlayer->readFile(cylinder);
