@@ -1,8 +1,10 @@
 #include "renderwindow.h"
 #include "beziercurve.h"
+#include "collision.h"
 #include "gsl_math.h"
 #include "mainwindow.h"
 #include "matrix4x4.h"
+#include "rollingstone.h"
 #include "shader.h"
 #include "tree.h"
 #include "trianglesurface.h"
@@ -98,7 +100,15 @@ void RenderWindow::init() {
     mVisualObjects.push_back(temp);
 
     TriangleSurface *mSurface = new TriangleSurface("../VSIMOblig/Assets/triangles.txt");
+    mSurface->move(vec3(-2, 3, -2));
+    mSurface->rotate(vec3(0, 0, 30));
+    mSurface->scale(5);
     mVisualObjects.push_back(mSurface);
+    collisionSystem = new Collision;
+
+    pawn = new RollingStone;
+    mVisualObjects.push_back(pawn);
+    pawn->move(vec3(1.2, 10.5, 1));
     //    mSurface->createSurface();
     //    mSurface->move(gsl::Vector3D(-3, 0, -3));
     //    mSurface->scale(gsl::Vector3D(3, 1, 3));
@@ -135,7 +145,9 @@ void RenderWindow::init() {
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
-    mCurrentCamera->setPosition(gsl::Vector3D(-0.5f, -3.5f, 3.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(-2.f, -5.5f, 10.f));
+    mCurrentCamera->yaw(-1.6);
+    mCurrentCamera->pitch(-30.6);
     for (VisualObject *object : mVisualObjects) {
         object->init();
     }
@@ -154,7 +166,6 @@ void RenderWindow::render() {
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //******** This should be done with a loop!
     for (VisualObject *object : mVisualObjects) {
         if (object->getUseTextures()) {
             glUseProgram(mShaderProgram[1]->getProgram());
@@ -169,6 +180,12 @@ void RenderWindow::render() {
             glUniformMatrix4fv(mMatrixUniform0, 1, GL_TRUE, object->getModelMatrix().constData());
         }
         object->draw();
+        if (TriangleSurface *obj = dynamic_cast<TriangleSurface *>(object)) {
+            auto [normal, position] = collisionSystem->getBallNormal(pawn->getPosition(), obj);
+            //            if (normal.x != 0 && normal.y != 0 && normal.z != 0) {
+            pawn->update(normal, position);
+            //            }
+        }
     }
     //    if (!playerCaught)
     //    {
@@ -226,26 +243,26 @@ void RenderWindow::moveAlongLine(float deltaTime) {
     mNPC->move(pointOnLine);
 }
 bool RenderWindow::detectPlayer() {
-    if ((mNPC->getPosition() - mPlayer->getPosition()).length() <= 2.5f) {
-        mNPC->setUseTextures(true);
-        startLoc = bezierPoints.at(0);
-        t = 0;
-        curNode = 1;
-        return true;
-    } else {
-        mNPC->setUseTextures(false);
-        return false;
-    }
+    //    if ((mNPC->getPosition() - mPlayer->getPosition()).length() <= 2.5f) {
+    //        mNPC->setUseTextures(true);
+    //        startLoc = bezierPoints.at(0);
+    //        t = 0;
+    //        curNode = 1;
+    //        return true;
+    //    } else {
+    //        mNPC->setUseTextures(false);
+    //        return false;
+    //    }
 }
 void RenderWindow::chasePlayer() {
-    gsl::Vector3D distanceToPlayer = mPlayer->getPosition() - mNPC->getPosition();
-    if (distanceToPlayer.length() <= 1.0f) // each of the cylinders have radius 0.5. This means they will collide at 0.5+0.5 = 1.0f
-    {
-        playerCaught = true;
-        return;
-    }
-    gsl::Vector3D moveVector = distanceToPlayer.normalized() * 0.016 * mNPCSpeed;
-    mNPC->move(mNPC->getPosition() + moveVector);
+    //    gsl::Vector3D distanceToPlayer = mPlayer->getPosition() - mNPC->getPosition();
+    //    if (distanceToPlayer.length() <= 1.0f) // each of the cylinders have radius 0.5. This means they will collide at 0.5+0.5 = 1.0f
+    //    {
+    //        playerCaught = true;
+    //        return;
+    //    }
+    //    gsl::Vector3D moveVector = distanceToPlayer.normalized() * 0.016 * mNPCSpeed;
+    //    mNPC->move(mNPC->getPosition() + moveVector);
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -394,7 +411,7 @@ void RenderWindow::consumeMovementInput(float deltaTime) {
     }
     if (mDesiredVelocity.length() != 0) {
         gsl::Vector3D moveVector = mDesiredVelocity.normalized() * deltaTime * mPlayerSpeed;
-        mPlayer->move(mPlayer->getPosition() + moveVector - counterForce);
+        //        mPlayer->move(mPlayer->getPosition() + moveVector - counterForce);
         mDesiredVelocity = gsl::Vector3D();
     }
 }
@@ -408,7 +425,7 @@ void RenderWindow::consumeMovementInput(float deltaTime) {
 vec3 RenderWindow::barycentricCoordinates(const vec3 &pointA, const vec3 &pointB, const vec3 &pointC) {
     vec3 v0 = pointB - pointA;
     vec3 v1 = pointC - pointA;
-    vec3 v2 = mPlayer->getPosition() - pointA;
+    vec3 v2 = pointA;
 
     float v0Sqr = gsl::Vector3D::dot(v0, v0);
     float v0Dotv1 = gsl::Vector3D::dot(v0, v1);

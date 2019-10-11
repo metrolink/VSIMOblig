@@ -5,8 +5,7 @@
 #include <QOpenGLFunctions_4_1_Core>
 
 typedef gsl::Vector3D vec3;
-class OctahedronBall : public VisualObject
-{
+class OctahedronBall : public VisualObject {
 private:
     int m_rekursjoner;
     int m_indeks; // brukes i rekursjon, til å bygge m_vertices
@@ -20,5 +19,6 @@ public:
     OctahedronBall(int n = 3, float radius = 0.25f);
     void init();
     void draw();
+    float radius() const;
 };
 #endif

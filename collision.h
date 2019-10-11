@@ -1,11 +1,14 @@
 #ifndef COLLISION_H
 #define COLLISION_H
 
-
-class Collision
-{
+#include "gsl_math.h"
+typedef gsl::Vector3D vec3;
+class TriangleSurface;
+class Collision {
 public:
     Collision();
+    vec3 barycentricCoordinates(const vec3 &point, const vec3 &pointA, const vec3 &pointB, const vec3 &pointC);
+    std::pair<vec3, vec3> getBallNormal(const vec3 &ballPos, TriangleSurface *surface);
 };
 
 #endif // COLLISION_H

@@ -1,4 +1,5 @@
 #include "octahedronball.h"
+#include "math_constants.h"
 #include <cmath>
 #include <iostream>
 #include <sstream>
@@ -22,8 +23,7 @@
 //! - n is the recursion level (number of repeated subdivisions)
 //!
 OctahedronBall::OctahedronBall(int n, float radius)
-    : m_rekursjoner(n), m_indeks(0), mRadius(radius)
-{
+    : m_rekursjoner(n), m_indeks(0), mRadius(radius) {
     mVertices.reserve(3 * 8 * pow(4, m_rekursjoner));
     octahedronUnitBall();
 }
@@ -40,8 +40,10 @@ OctahedronBall::OctahedronBall(int n, float radius)
 //! final step of recursion.
 //!
 // added a radius modifier, super messy though, should probably do it in a different way
-void OctahedronBall::createTriangle(const vec3 &v1, const vec3 &v2, const vec3 &v3)
-{
+float OctahedronBall::radius() const {
+    return mRadius;
+}
+void OctahedronBall::createTriangle(const vec3 &v1, const vec3 &v2, const vec3 &v3) {
     Vertex vert1{v1.getX() * mRadius, v1.getY() * mRadius, v1.getZ() * mRadius, v1.getX() * mRadius, v1.getY() * mRadius, v1.getZ() * mRadius};
     Vertex vert2{v2.getX() * mRadius, v2.getY() * mRadius, v2.getZ() * mRadius, v2.getX() * mRadius, v2.getY() * mRadius, v2.getZ() * mRadius};
     Vertex vert3{v3.getX() * mRadius, v3.getY() * mRadius, v3.getZ() * mRadius, v3.getX() * mRadius, v3.getY() * mRadius, v3.getZ() * mRadius};
@@ -74,10 +76,8 @@ void OctahedronBall::createTriangle(const vec3 &v1, const vec3 &v2, const vec3 &
 //! else
 //! - call lagTriangel(a, b, c)
 //!
-void OctahedronBall::subDivide(const vec3 &a, const vec3 &b, const vec3 &c, int n)
-{
-    if (n > 0)
-    {
+void OctahedronBall::subDivide(const vec3 &a, const vec3 &b, const vec3 &c, int n) {
+    if (n > 0) {
         vec3 v1 = a + b;
         v1.normalize();
         vec3 v2 = a + c;
@@ -88,9 +88,7 @@ void OctahedronBall::subDivide(const vec3 &a, const vec3 &b, const vec3 &c, int 
         subDivide(c, v2, v3, n - 1);
         subDivide(b, v3, v1, n - 1);
         subDivide(v3, v2, v1, n - 1);
-    }
-    else
-    {
+    } else {
         createTriangle(a, b, c);
     }
 }
@@ -101,8 +99,7 @@ void OctahedronBall::subDivide(const vec3 &a, const vec3 &b, const vec3 &c, int 
 //! If the parameter n of the constructor OctahedronBall() is zero, the result will be the
 //! original octahedron consisting of 8 triangles with duplicated vertices.
 //!
-void OctahedronBall::octahedronUnitBall()
-{
+void OctahedronBall::octahedronUnitBall() {
     vec3 v0{0, 0, 1};
     vec3 v1{1, 0, 0};
     vec3 v2{0, 1, 0};
@@ -120,8 +117,7 @@ void OctahedronBall::octahedronUnitBall()
     subDivide(v5, v1, v4, m_rekursjoner);
 }
 
-void OctahedronBall::init()
-{
+void OctahedronBall::init() {
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
@@ -148,8 +144,8 @@ void OctahedronBall::init()
 
     glBindVertexArray(0);
 }
-void OctahedronBall::draw()
-{
+
+void OctahedronBall::draw() {
     glBindVertexArray(mVAO);
     glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
 }

@@ -54,14 +54,20 @@ Vector3D Vector3D::operator*(GLfloat rhs) const {
     return {x * rhs, y * rhs, z * rhs};
 }
 
-float Vector3D::operator*(const Vector3D &v) const
-
-{
+float Vector3D::operator*(const Vector3D &v) const {
     return x * v.x + y * v.y + z * v.z;
 }
 
 Vector3D Vector3D::operator^(const Vector3D &rhs) const {
     return {y * rhs.getZ() - z * rhs.getY(), z * rhs.getX() - x * rhs.getZ(), x * rhs.getY() - y * rhs.getX()};
+}
+
+bool Vector3D::operator!=(const Vector3D &v) const {
+    return x != v.x && y != v.y && z != v.z;
+}
+
+bool Vector3D::operator==(const Vector3D &v) const {
+    return x == v.x && y == v.y && z == v.z;
 }
 
 GLfloat Vector3D::length() const {

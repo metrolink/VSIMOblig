@@ -16,13 +16,14 @@ class QOpenGLContext;
 class Shader;
 class TriangleSurface;
 class MainWindow;
+class RollingStone;
+class Collision;
 typedef gsl::Vector3D vec3;
 /// This inherits from QWindow to get access to the Qt functionality and
 /// OpenGL surface.
 /// We also inherit from QOpenGLFunctions, to get access to the OpenGL functions
 /// This is the same as using glad and glw from general OpenGL tutorials
-class RenderWindow : public QWindow, protected QOpenGLFunctions_4_1_Core
-{
+class RenderWindow : public QWindow, protected QOpenGLFunctions_4_1_Core {
     Q_OBJECT
 public:
     RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow);
@@ -41,7 +42,7 @@ private slots:
 
 private:
     // Player variables
-    TriangleSurface *mPlayer;
+    RollingStone *pawn;
     float mPlayerSpeed{3.f};
     gsl::Vector3D mDesiredVelocity{0, 0, 0};
     void calculateKeyInputs();
@@ -79,6 +80,7 @@ private:
     std::vector<VisualObject *> mVisualObjects;
 
     Camera *mCurrentCamera{nullptr};
+    Collision *collisionSystem;
 
     bool mWireframe{false};
 

@@ -1,7 +1,7 @@
 QT          += core gui widgets
 
 TEMPLATE    = app
-CONFIG      += c++11
+CONFIG      += c++17
 
 TARGET      = 3D-eksamen
 
@@ -17,6 +17,7 @@ SOURCES += main.cpp \
     GSL/gsl_math.cpp \
     collision.cpp \
     renderwindow.cpp \
+    rollingstone.cpp \
     shader.cpp \
     mainwindow.cpp \
     triangle.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
     GSL/math_constants.h \
     collision.h \
     renderwindow.h \
+    rollingstone.h \
     shader.h \
     mainwindow.h \
     triangle.h \
