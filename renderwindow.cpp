@@ -94,7 +94,6 @@ void RenderWindow::init() {
     //    glBindTexture(GL_TEXTURE_2D, mTexture[0]->id());
     //    glActiveTexture(GL_TEXTURE1);
     //    glBindTexture(GL_TEXTURE_2D, mTexture[1]->id());
-
     //********************** Making the objects to be drawn **********************
     VisualObject *temp = new XYZ();
     mVisualObjects.push_back(temp);
@@ -104,11 +103,14 @@ void RenderWindow::init() {
     mSurface->rotate(vec3(0, 0, 30));
     mSurface->scale(5);
     mVisualObjects.push_back(mSurface);
-    collisionSystem = new Collision;
+    TriangleSurface *mSurface2 = new TriangleSurface("../VSIMOblig/Assets/triangles.txt");
+    mSurface2->move(vec3(6.5, -4, -2));
+    mSurface2->scale(5);
+    mVisualObjects.push_back(mSurface2);
 
     pawn = new RollingStone;
     mVisualObjects.push_back(pawn);
-    pawn->move(vec3(1.2, 10.5, 1));
+    pawn->move(vec3(1.2, 5.5, 1));
     //    mSurface->createSurface();
     //    mSurface->move(gsl::Vector3D(-3, 0, -3));
     //    mSurface->scale(gsl::Vector3D(3, 1, 3));
@@ -180,13 +182,10 @@ void RenderWindow::render() {
             glUniformMatrix4fv(mMatrixUniform0, 1, GL_TRUE, object->getModelMatrix().constData());
         }
         object->draw();
-        if (TriangleSurface *obj = dynamic_cast<TriangleSurface *>(object)) {
-            auto [normal, position] = collisionSystem->getBallNormal(pawn->getPosition(), obj);
-            //            if (normal.x != 0 && normal.y != 0 && normal.z != 0) {
-            pawn->update(normal, position);
-            //            }
-        }
     }
+    for (VisualObject *obj : mVisualObjects)
+        if (TriangleSurface *triangle = dynamic_cast<TriangleSurface *>(obj))
+            pawn->update(triangle);
     //    if (!playerCaught)
     //    {
     //        consumeMovementInput(0.016f);

@@ -44,7 +44,6 @@ void Camera::update() {
     mPitchMatrix.setToIdentity();
 
     mPitchMatrix.rotateX(mPitch);
-    qDebug() << mPitch << mYaw;
     mYawMatrix.rotateY(mYaw);
 
     mPosition += mForward * mSpeed;

@@ -80,7 +80,6 @@ private:
     std::vector<VisualObject *> mVisualObjects;
 
     Camera *mCurrentCamera{nullptr};
-    Collision *collisionSystem;
 
     bool mWireframe{false};
 

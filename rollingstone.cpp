@@ -1,11 +1,16 @@
 #include "rollingstone.h"
+#include "collision.h"
+#include "trianglesurface.h"
 
 RollingStone::RollingStone() {
+    collisionSystem = new Collision;
 }
-void RollingStone::update(vec3 normal, vec3 position) {
-    //    qDebug() << getPosition().x << getPosition().y << getPosition().z;
-    calculateVelocity(normal, position);
-    move((getPosition() + velocity()));
+void RollingStone::update(TriangleSurface *obj) {
+    auto [hitResult, normal, position] = collisionSystem->getBallNormal(getPosition(), obj);
+    if (hitResult) {
+        calculateVelocity(normal, position);
+        move(getPosition() + velocity());
+    }
 }
 vec3 RollingStone::velocity() const {
     return mVelocity;
@@ -30,7 +35,8 @@ void RollingStone::calculateVelocity(vec3 normal, vec3 vecToTri) {
             vec3 tempNormal = normal + lastNormal;
             tempNormal.normalize();
             vec3 tempVelocity = tempNormal * vec3::dot(velocity(), tempNormal);
-            mVelocity = velocity() - tempVelocity * 2;
+            tempVelocity = velocity() - tempVelocity * 2;
+            mVelocity = tempVelocity;
         }
     }
     lastNormal = normal;

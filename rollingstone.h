@@ -2,12 +2,13 @@
 #define ROLLINGSTONE_H
 
 #include "octahedronball.h"
-
+class Collision;
+class TriangleSurface;
 class RollingStone : public OctahedronBall {
 public:
     RollingStone();
     vec3 velocity() const;
-    void update(vec3 curTriangle, vec3 position);
+    void update(TriangleSurface *obj);
 
 private:
     vec3 mVelocity{0};
@@ -16,6 +17,7 @@ private:
     vec3 lastNormal;
     vec3 gravity{0, -9.81, 0};
 
+    Collision *collisionSystem;
     void calculateVelocity(vec3 normal, vec3 distanceToTriangle);
 };
 

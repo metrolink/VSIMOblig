@@ -27,9 +27,10 @@ vec3 Collision::barycentricCoordinates(const vec3 &point, const vec3 &pointA, co
     baryc.setZ(1.0f - baryc.getX() - baryc.getY());
     return baryc;
 }
-std::pair<vec3, vec3> Collision::getBallNormal(const vec3 &ballPos, TriangleSurface *surface) {
+std::tuple<bool, vec3, vec3> Collision::getBallNormal(const vec3 &ballPos, TriangleSurface *surface) {
     vec3 normal{0};
     vec3 tempPos{0};
+    bool hitResult{false};
     std::vector<vec3> triangleSurfaces = surface->getTrianglePoints();
     for (size_t i = 0; i < triangleSurfaces.size(); i += 3) {
         // Check every three surface points for the triangle
@@ -38,9 +39,9 @@ std::pair<vec3, vec3> Collision::getBallNormal(const vec3 &ballPos, TriangleSurf
             normal = vec3::cross(triangleSurfaces[i + 2] - triangleSurfaces[i], triangleSurfaces[i + 1] - triangleSurfaces[i]);
             normal.normalize();
             tempPos = (triangleSurfaces[i] * baryc.x + triangleSurfaces[i + 1] * baryc.y + triangleSurfaces[i + 2] * baryc.z);
-            qDebug() << tempPos.x << tempPos.y << tempPos.z;
+            hitResult = true;
             break;
         }
     }
-    return std::pair<vec3, vec3>(normal, tempPos);
+    return std::tuple<bool, vec3, vec3>(hitResult, normal, tempPos);
 }
