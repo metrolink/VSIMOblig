@@ -10,8 +10,8 @@ VisualObject::VisualObject()
 
 VisualObject::~VisualObject()
 {
-    glDeleteVertexArrays(1, &mVAO);
-    glDeleteBuffers(1, &mVBO);
+//    glDeleteVertexArrays(1, &mVAO); /TODO, fix this
+//    glDeleteBuffers(1, &mVBO);
 }
 void VisualObject::move(gsl::Vector3D vec)
 {
