@@ -5,7 +5,8 @@
 #include "mainwindow.h"
 #include "matrix4x4.h"
 #include "rollingstone.h"
-#include "lasmap.h"
+//#include "lasmap.h"
+#include "LASLoader.h"
 #include "shader.h"
 #include "tree.h"
 #include "trianglesurface.h"
@@ -110,7 +111,7 @@ void RenderWindow::init() {
     mVisualObjects.push_back(mSurface2);
 
 
-    LasMap *mTestMap = new LasMap();
+    gsl::LASLoader *mTestMap = new gsl::LASLoader();
     mVisualObjects.push_back(mTestMap);
 
 
