@@ -16,6 +16,7 @@ SOURCES += main.cpp \
     GSL/vector4d.cpp \
     GSL/gsl_math.cpp \
     collision.cpp \
+    lasmap.cpp \
     renderwindow.cpp \
     rollingstone.cpp \
     shader.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
     GSL/math_constants.h \
     LASLoader.h \
     collision.h \
+    lasmap.h \
     renderwindow.h \
     rollingstone.h \
     shader.h \
