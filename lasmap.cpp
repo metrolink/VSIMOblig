@@ -35,7 +35,6 @@ LasMap::LasMap()
 
     //printSomePoints();
     addAllPointsToVertices();
-
     centerMap();
 }
 
@@ -125,13 +124,13 @@ void LasMap::centerMap()
     std::sort(yValues.begin(), yValues.end());
     std::sort(zValues.begin(), zValues.end());
 
-    std::cout << xValues[0] << " ";
-    std::cout << yValues[0] << " ";
-    std::cout << zValues[0] << " ";
+//    std::cout << xValues[0] << " ";
+//    std::cout << yValues[0] << " ";
+//    std::cout << zValues[0] << " ";
 
-    std::cout << xValues[xValues.size() - 1] << " ";
-    std::cout << yValues[yValues.size() - 1] << " ";
-    std::cout << zValues[zValues.size() - 1] << " ";
+//    std::cout << xValues[xValues.size() - 1] << " ";
+//    std::cout << yValues[yValues.size() - 1] << " ";
+//    std::cout << zValues[zValues.size() - 1] << " ";
 
 //    double xTranslate = (-xValues[0] + xValues[xValues.size() - 1]) ;
 //    double yTranslate = (-yValues[0] + yValues[xValues.size() - 1]) ;
