@@ -2,17 +2,19 @@
 #define LASMAP_H
 
 #include "visualobject.h"
+#include "LASLoader.h"
 
-class LasMap : public VisualObject
+class LasMap/* : public LASLoader*/
 {
 public:
     LasMap();
-    ~LasMap() override;
+    //~LasMap() override;
 
-    virtual void init() override;
-    virtual void draw() override;
+//    virtual void init() override;
+//    virtual void draw() override;
 
     void readFile(std::string filename);
+
 
 };
 
