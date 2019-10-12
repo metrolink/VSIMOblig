@@ -41,6 +41,7 @@ HEADERS += \
     GSL/vector4d.h \
     GSL/gsl_math.h \
     GSL/math_constants.h \
+    LASLoader.h \
     collision.h \
     renderwindow.h \
     rollingstone.h \
