@@ -180,4 +180,17 @@ namespace gsl
         else
             return false;
     }
+
+    GLdouble newtons2Law(GLdouble landMass, GLdouble ballMass, GLdouble distance)
+    {
+        double m1 = landMass;
+        double m2 = ballMass;
+        double r2 = distance;
+        double G = 6.6742E-11;
+
+        double Force = (G*m1*m2)/(r2*r2);
+
+        return Force;
+    }
+
 } //namespace
