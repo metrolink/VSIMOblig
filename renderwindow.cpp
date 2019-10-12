@@ -5,6 +5,7 @@
 #include "mainwindow.h"
 #include "matrix4x4.h"
 #include "rollingstone.h"
+#include "lasmap.h"
 #include "shader.h"
 #include "tree.h"
 #include "trianglesurface.h"
@@ -107,6 +108,11 @@ void RenderWindow::init() {
     mSurface2->move(vec3(6.5, -4, -2));
     mSurface2->scale(5);
     mVisualObjects.push_back(mSurface2);
+
+
+    LasMap *mTestMap = new LasMap();
+    mVisualObjects.push_back(mTestMap);
+
 
     pawn = new RollingStone;
     mVisualObjects.push_back(pawn);
