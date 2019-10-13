@@ -21,7 +21,6 @@
 namespace gsl
 {
 constexpr bool VERBOSE = false;
-
 // TODO update so both 1.2 and 1.4 will work
 // - Add 1.3 and 1.4 formats
 // NB: For 32 bit compilator
