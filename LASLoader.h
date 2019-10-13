@@ -16,133 +16,23 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
-
-//#include "lasmap.h"
-#include "math_constants.h"
-#include "vertex.h"
-#include <QDebug>
-#include <cmath>
-
-#include "visualobject.h"
+#include <cctype>
 
 namespace gsl
 {
 constexpr bool VERBOSE = false;
-unsigned short getCurrentYearLAS()
-{
-    auto t = std::time(nullptr);
-    return std::localtime(&t)->tm_year + 1900;
-}
 
 // TODO update so both 1.2 and 1.4 will work
 // - Add 1.3 and 1.4 formats
 // NB: For 32 bit compilator
 // 64 bit must use other types that are equal in bytesize.
-class LASLoader : public VisualObject
+class LASLoader
 {
 public:
-    LASLoader()
+    unsigned short getCurrentYearLAS()
     {
-            Vertex v{};
-            v.set_xyz(0, 0, 0);
-            v.set_rgb(0, 1, 0);
-            v.set_uv(0, 0);
-            mVertices.push_back(v);
-            v.set_xyz(2, 0, 0);
-            v.set_rgb(0, 1, 0);
-            v.set_uv(1, 0);
-            mVertices.push_back(v);
-            v.set_xyz(2, 0, 2);
-            v.set_rgb(0, 1, 0);
-            v.set_uv(1, 1);
-            mVertices.push_back(v);
-            v.set_xyz(0, 0, 0);
-            v.set_rgb(0, 1, 0);
-            v.set_uv(0, 0);
-            mVertices.push_back(v);
-            v.set_xyz(2, 0, 2);
-            v.set_rgb(0, 1, 0);
-            v.set_uv(1, 1);
-            mVertices.push_back(v);
-            v.set_xyz(0, 0, 2);
-            v.set_rgb(0, 1, 0);
-            v.set_uv(0, 1);
-            mVertices.push_back(v);
-    }
-//    LASLoader(int whatever)
-//    {
-//        Vertex v{};
-//        v.set_xyz(0, 0, 0);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(0, 0);
-//        mVertices.push_back(v);
-//        v.set_xyz(2, 0, 0);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(1, 0);
-//        mVertices.push_back(v);
-//        v.set_xyz(2, 0, 2);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(1, 1);
-//        mVertices.push_back(v);
-//        v.set_xyz(0, 0, 0);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(0, 0);
-//        mVertices.push_back(v);
-//        v.set_xyz(2, 0, 2);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(1, 1);
-//        mVertices.push_back(v);
-//        v.set_xyz(0, 0, 2);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(0, 1);
-//        mVertices.push_back(v);
-//    }
-    ~LASLoader()
-    {
-        close();
-    }
-
-    void readFile(std::string filename)
-    {
-        mVertices.clear();
-
-    }
-
-    void init() override
-    {
-        //must call this to use OpenGL functions
-        initializeOpenGLFunctions();
-
-        //Vertex Array Object - VAO
-        glGenVertexArrays(1, &mVAO);
-        glBindVertexArray(mVAO);
-
-        //Vertex Buffer Object to hold vertices - VBO
-        glGenBuffers(1, &mVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-
-        glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)0);
-        glEnableVertexAttribArray(0);
-
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)(3 * sizeof(GLfloat)));
-        glEnableVertexAttribArray(1);
-
-        // 3rd attribute buffer : uvs
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)(6 * sizeof(GLfloat)));
-        glEnableVertexAttribArray(2);
-
-        glPointSize(6.f);
-
-        glBindVertexArray(0);
-    }
-
-    void draw() override
-    {
-        glBindVertexArray(mVAO);
-        glDrawArrays(GL_POINTS, 0, mVertices.size());
+        auto t = std::time(nullptr);
+        return std::localtime(&t)->tm_year + 1900;
     }
     /** Standard type sizes for 32 bit compiler:
      * char = 1
@@ -439,6 +329,10 @@ private:
     std::ifstream fstrm{};
 
 public:
+    LASLoader()
+    {
+
+    }
 
     LASLoader(const std::string& file)
     {
@@ -632,6 +526,10 @@ public:
         return points;
     }
 
+    ~LASLoader()
+    {
+        close();
+    }
 
 };
 

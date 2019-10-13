@@ -5,8 +5,8 @@
 #include "mainwindow.h"
 #include "matrix4x4.h"
 #include "rollingstone.h"
-//#include "lasmap.h"
-#include "LASLoader.h"
+#include "lasmap.h"
+//#include "LASLoader.h"
 #include "shader.h"
 #include "tree.h"
 #include "trianglesurface.h"
@@ -111,7 +111,13 @@ void RenderWindow::init() {
     mVisualObjects.push_back(mSurface2);
 
 
-    gsl::LASLoader *mTestMap = new gsl::LASLoader();
+//    gsl::LASLoader *mTestMap = new gsl::LASLoader("../VSIMOblig/LASdata/33-1-497-327-20.las"); ////Get LASLoader to read correct constructor
+////    mTestMap->readFile("../VSIMOblig/LASdata/33-1-497-327-20.las");
+////    mTestMap->scale(0.001f);
+//    mVisualObjects.push_back(mTestMap);
+
+    LasMap *mTestMap = new LasMap();
+    //mTestMap->scale(10);
     mVisualObjects.push_back(mTestMap);
 
 
@@ -248,7 +254,8 @@ void RenderWindow::moveAlongLine(float deltaTime) {
 
     mNPC->move(pointOnLine);
 }
-bool RenderWindow::detectPlayer() {
+bool RenderWindow::detectPlayer()
+{
     //    if ((mNPC->getPosition() - mPlayer->getPosition()).length() <= 2.5f) {
     //        mNPC->setUseTextures(true);
     //        startLoc = bezierPoints.at(0);
@@ -259,8 +266,10 @@ bool RenderWindow::detectPlayer() {
     //        mNPC->setUseTextures(false);
     //        return false;
     //    }
+    return false;
 }
-void RenderWindow::chasePlayer() {
+void RenderWindow::chasePlayer()
+{
     //    gsl::Vector3D distanceToPlayer = mPlayer->getPosition() - mNPC->getPosition();
     //    if (distanceToPlayer.length() <= 1.0f) // each of the cylinders have radius 0.5. This means they will collide at 0.5+0.5 = 1.0f
     //    {
@@ -269,6 +278,7 @@ void RenderWindow::chasePlayer() {
     //    }
     //    gsl::Vector3D moveVector = distanceToPlayer.normalized() * 0.016 * mNPCSpeed;
     //    mNPC->move(mNPC->getPosition() + moveVector);
+
 }
 
 //This function is called from Qt when window is exposed (shown)

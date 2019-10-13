@@ -6,6 +6,9 @@ CONFIG      += c++17
 TARGET      = 3D-eksamen
 
 INCLUDEPATH +=  ./GSL
+INCLUDEPATH += $(LASTOOLS_HOME)\\LASlib\\inc
+INCLUDEPATH += $(LASTOOLS_HOME)\\LASzip\\src
+LIBS *= $(LASTOOLS_HOME)\\LASlib\\lib\\LASlib.lib
 
 SOURCES += main.cpp \
     GSL/matrix2x2.cpp \
