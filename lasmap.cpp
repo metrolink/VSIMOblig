@@ -34,9 +34,10 @@ LasMap::LasMap()
 //    mVertices.push_back(v);
 
     //printSomePoints();   
-    //readFile("../VSIMOblig/LASdata/33-1-497-327-20.txt");
+    readFile("../VSIMOblig/LASdata/33-1-497-327-20.txt");
     addAllPointsToVertices();
     centerMap();
+
 }
 
 LasMap::~LasMap()
@@ -102,6 +103,15 @@ void LasMap::addAllPointsToVertices()
             mVertices.push_back(v);
     }
 
+//    int i = 0;
+//    for (auto point : lasloader)
+//    {
+//        ++i;
+//    }
+//    std::cout << i << "\n";
+
+
+
 //    for (auto point : points)
 //    {
 //            Vertex v{};
@@ -158,7 +168,25 @@ void LasMap::centerMap()
     //mMatrix.translate(2, 2, 2);
 
 
-////    move(gsl::Vector3D(-483197.75, -7569861.26, 0.70));
+    ////    move(gsl::Vector3D(-483197.75, -7569861.26, 0.70));
+}
+
+void LasMap::readFile()
+{
+//    LASreadOpener lasreadopener;
+//    lasreadopener.set_file_name("../VSIMOblig/LASdata/33-1-497-327-20.las");
+//    LASreader* lasreader = lasreadopener.open();
+
+//    while (lasreader->read_point())
+//    {
+//        Vertex v{};
+////            v.set_xyz(point.xNorm(), point.yNorm(), point.zNorm());
+//        v.set_xyz(lasreader->get_x(), lasreader->get_y(), lasreader->get_z());
+//        v.set_rgb(0, 1, 0);
+//        v.set_uv(0, 0);
+//        mVertices.push_back(v);
+//    }
+
 }
 
 void LasMap::readFile(std::string filename)
@@ -189,10 +217,11 @@ void LasMap::readFile(std::string filename)
         //qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
     }
 
-//    for (int i = 1; i < 30; ++i)
-//    {
-//        std::cout << points[i].getX() << " " << points[i].getY() << " " << points[i].getZ() << "\n";
-//    }
+    for (int i = 0; i < 30; ++i)
+    {
+        std::cout << points[i].getX() << " " << points[i].getY() << " " << points[i].getZ() << "\n";
+    }
+    std::cout << std::setprecision(10) << points.size() << "\n";
 }
 
 

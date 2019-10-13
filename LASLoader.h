@@ -16,6 +16,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+#include <cctype>
 
 namespace gsl
 {
