@@ -103,7 +103,7 @@ void LasMap::addAllPointsToVertices()
     {
             Vertex v{};
             v.set_xyz(point.x, point.y, point.z);
-            v.set_rgb(0, 1, 0);
+            v.set_rgb(point.x/scaleFactor, point.z/scaleFactor, 0.5);
             v.set_uv(0, 0);
             mVertices.push_back(v);
     }
@@ -207,6 +207,11 @@ void LasMap::readFile(std::string filename)
             std::getline(inn, str);
         }
         inn.close();
+
+        unsigned long long N = points.size() / 4;
+        for (unsigned long long i = 0; i < N; ++i)
+            points.at(i) = points.at(i * 4);
+        points.resize(N);
         //qDebug() << "TriangleSurface file read: " << QString::fromStdString(filename);
     }
     else
@@ -219,6 +224,13 @@ void LasMap::readFile(std::string filename)
         std::cout << points[i].getX() << " " << points[i].getY() << " " << points[i].getZ() << "\n";
     }
     std::cout << "\n\n";
+
+//    for (int i = 0; i < points.size() - 1; i +=2)
+//    {
+//        points.
+//    }
+
+
 //    std::cout << std::setprecision(10) << points.size() << "\n";
 }
 
