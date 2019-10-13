@@ -34,6 +34,7 @@ SOURCES += main.cpp \
     camera.cpp \
     octahedronball.cpp \
     tree.cpp \
+    plane.cpp \
     beziercurve.cpp
 
 HEADERS += \
@@ -63,6 +64,7 @@ HEADERS += \
     camera.h \
     octahedronball.h \
     tree.h \
+    plane.h \
     beziercurve.h
 
 FORMS += \
