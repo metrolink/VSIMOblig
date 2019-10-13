@@ -16,16 +16,11 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+#include <cctype>
 
 namespace gsl
 {
 constexpr bool VERBOSE = false;
-unsigned short getCurrentYear()
-{
-    auto t = std::time(nullptr);
-    return std::localtime(&t)->tm_year + 1900;
-}
-
 // TODO update so both 1.2 and 1.4 will work
 // - Add 1.3 and 1.4 formats
 // NB: For 32 bit compilator
@@ -33,6 +28,11 @@ unsigned short getCurrentYear()
 class LASLoader
 {
 public:
+    unsigned short getCurrentYearLAS()
+    {
+        auto t = std::time(nullptr);
+        return std::localtime(&t)->tm_year + 1900;
+    }
     /** Standard type sizes for 32 bit compiler:
      * char = 1
      * short = 2
@@ -390,7 +390,7 @@ public:
                     usingCreationDay = false;
                 }
 
-                if (creationDayYear[1] > 2000 && creationDayYear[1] <= getCurrentYear())
+                if (creationDayYear[1] > 2000 && creationDayYear[1] <= getCurrentYearLAS())
                 {
                     header.fileCreationYear = creationDayYear[1];
                     usingCreationYear = true;
