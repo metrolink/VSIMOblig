@@ -100,15 +100,19 @@ void RenderWindow::init() {
     VisualObject *temp = new XYZ();
     mVisualObjects.push_back(temp);
 
-    TriangleSurface *mSurface = new TriangleSurface("../VSIMOblig/Assets/triangles.txt");
-    mSurface->move(vec3(-2, 3, -2));
-    mSurface->rotate(vec3(0, 0, 30));
-    mSurface->scale(5);
-    mVisualObjects.push_back(mSurface);
-    TriangleSurface *mSurface2 = new TriangleSurface("../VSIMOblig/Assets/triangles.txt");
-    mSurface2->move(vec3(6.5, -4, -2));
-    mSurface2->scale(5);
-    mVisualObjects.push_back(mSurface2);
+//    TriangleSurface *mSurface = new TriangleSurface("../VSIMOblig/Assets/triangles.txt");
+//    mSurface->move(vec3(-2, 3, -2));
+//    mSurface->rotate(vec3(0, 0, 30));
+//    mSurface->scale(5);
+//    mVisualObjects.push_back(mSurface);
+//    TriangleSurface *mSurface2 = new TriangleSurface("../VSIMOblig/Assets/triangles.txt");
+//    mSurface2->move(vec3(6.5, -4, -2));
+//    mSurface2->scale(5);
+//    mVisualObjects.push_back(mSurface2);
+
+//    pawn = new RollingStone;
+//    mVisualObjects.push_back(pawn);
+//    pawn->move(vec3(1.2, 5.5, 1));
 
 
 //    gsl::LASLoader *mTestMap = new gsl::LASLoader("../VSIMOblig/LASdata/33-1-497-327-20.las"); ////Get LASLoader to read correct constructor
@@ -121,9 +125,7 @@ void RenderWindow::init() {
     mVisualObjects.push_back(mTestMap);
 
 
-    pawn = new RollingStone;
-    mVisualObjects.push_back(pawn);
-    pawn->move(vec3(1.2, 5.5, 1));
+
     //    mSurface->createSurface();
     //    mSurface->move(gsl::Vector3D(-3, 0, -3));
     //    mSurface->scale(gsl::Vector3D(3, 1, 3));
