@@ -84,6 +84,7 @@ void RenderWindow::init() {
 
     setupPlainShader(0);
     setupTextureShader(1);
+    collisionSystem = new Collision;
 
     //**********************  Texture stuff: **********************
     //    mTexture[0] = new Texture();
@@ -100,17 +101,17 @@ void RenderWindow::init() {
 
     TriangleSurface *mSurface = new TriangleSurface("../VSIMOblig/Assets/triangles.txt");
     mSurface->move(vec3(-2, 3, -2));
-    mSurface->rotate(vec3(0, 0, 30));
+    mSurface->rotate(vec3(0, 0, 10));
     mSurface->scale(5);
     mVisualObjects.push_back(mSurface);
     TriangleSurface *mSurface2 = new TriangleSurface("../VSIMOblig/Assets/triangles.txt");
-    mSurface2->move(vec3(6.5, -4, -2));
+    mSurface2->move(vec3(5, -4, -2));
     mSurface2->scale(5);
     mVisualObjects.push_back(mSurface2);
 
     pawn = new RollingStone;
     mVisualObjects.push_back(pawn);
-    pawn->move(vec3(1.2, 5.5, 1));
+    pawn->move(vec3(1.2, 4.7, 1));
     //    mSurface->createSurface();
     //    mSurface->move(gsl::Vector3D(-3, 0, -3));
     //    mSurface->scale(gsl::Vector3D(3, 1, 3));
@@ -183,9 +184,25 @@ void RenderWindow::render() {
         }
         object->draw();
     }
-    for (VisualObject *obj : mVisualObjects)
-        if (TriangleSurface *triangle = dynamic_cast<TriangleSurface *>(obj))
-            pawn->update(triangle);
+    vec3 baryc;
+    for (VisualObject *obj : mVisualObjects) {
+        bool foundTriangle{false};
+        if (TriangleSurface *triangle = dynamic_cast<TriangleSurface *>(obj)) {
+            std::vector<vec3> triPoints = triangle->getTrianglePoints();
+            for (size_t i = 0; i < triPoints.size(); i += 3) {
+                baryc = collisionSystem->barycentricCoordinates(pawn->getPosition(), triPoints[i], triPoints[i + 1], triPoints[i + 2]);
+                if (gsl::within(baryc.x) && gsl::within(baryc.y) && (baryc.x + baryc.y) <= 1) {
+                    pawn->currentTriangle = std::vector<vec3>{triPoints[i], triPoints[i + 1], triPoints[i + 2]};
+                    foundTriangle = true;
+                    break;
+                }
+            }
+            if (foundTriangle)
+                break;
+        }
+    }
+    pawn->updateVelocity(baryc);
+    pawn->update();
     //    if (!playerCaught)
     //    {
     //        consumeMovementInput(0.016f);

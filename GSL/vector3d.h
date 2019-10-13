@@ -19,13 +19,15 @@ public:
     //Operators
     const Vector3D &operator=(const Vector3D &rhs); // v = v
     Vector3D operator+(const Vector3D &rhs) const;  // v + v
-    Vector3D operator-(const Vector3D &rhs) const;  // v - v
-    Vector3D &operator+=(const Vector3D &rhs);      // v += v
-    Vector3D &operator-=(const Vector3D &rhs);      // v -= v
-    Vector3D operator-() const;                     // -v
-    Vector3D operator*(GLfloat rhs) const;          // v * f
-    float operator*(const Vector3D &v) const;       // Dot Product
-    Vector3D operator^(const Vector3D &rhs) const;  // v x v  - cross product
+    Vector3D operator/(const Vector3D &rhs) const;
+    Vector3D operator/(float scalar);
+    Vector3D operator-(const Vector3D &rhs) const; // v - v
+    Vector3D &operator+=(const Vector3D &rhs);     // v += v
+    Vector3D &operator-=(const Vector3D &rhs);     // v -= v
+    Vector3D operator-() const;                    // -v
+    Vector3D operator*(GLfloat rhs) const;         // v * f
+    float operator*(const Vector3D &v) const;      // Dot Product
+    Vector3D operator^(const Vector3D &rhs) const; // v x v  - cross product
     bool operator!=(const Vector3D &v) const;
     bool operator==(const Vector3D &v) const;
 

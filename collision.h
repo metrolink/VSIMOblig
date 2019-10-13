@@ -7,8 +7,8 @@ class TriangleSurface;
 class Collision {
 public:
     Collision();
+    std::tuple<vec3, vec3> getBallNormal(const vec3 &baryc, std::vector<vec3> triangle);
     vec3 barycentricCoordinates(const vec3 &point, const vec3 &pointA, const vec3 &pointB, const vec3 &pointC);
-    std::tuple<bool, vec3, vec3> getBallNormal(const vec3 &ballPos, TriangleSurface *surface);
 };
 
 #endif // COLLISION_H
