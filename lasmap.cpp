@@ -168,6 +168,69 @@ void LasMap::normalizePoints()
     ////    move(gsl::Vector3D(-483197.75, -7569861.26, 0.70));
 }
 
+float LasMap::length(const gsl::Vector3D& a, const gsl::Vector3D& b)
+{
+    return static_cast<float>(std::sqrt(std::pow(a.x + b.x, 2) + std::pow(a.y + b.y, 2) + std::pow(a.z + b.z, 2)));
+}
+
+std::vector<gsl::Vector3D> LasMap::mapToGrid(int xGrid, int zGrid, gsl::Vector3D min, gsl::Vector3D max)
+{
+    std::vector<std::pair<gsl::Vector3D, unsigned int>> grid;
+    grid.reserve(xGrid * zGrid);
+
+    for (auto point : points)
+    {
+        int closestIndex[2]{0, 0};
+        for (int z{0}; z < zGrid; ++z)
+        {
+            for (int x{0}; x < xGrid; ++x)
+            {
+                gsl::Vector3D gridPoint{
+                    x * ((max.x - min.x) / xGrid) + min.x,
+                    0,
+                    z * ((max.z - min.z) / zGrid) + min.z
+                };
+
+                gsl::Vector3D lastClosestPoint{
+                    closestIndex[0] * ((max.x - min.x) / xGrid) + min.x,
+                    0,
+                    closestIndex[1] * ((max.z - min.z) / zGrid) + min.z
+                };
+
+                if (length(point, gridPoint) < length(point, lastClosestPoint))
+                {
+                    closestIndex[0] = x;
+                    closestIndex[1] = z;
+                }
+            }
+        }
+
+        auto& p = grid.at(closestIndex[0] + closestIndex[1] * zGrid);
+        p.first += point;
+        ++p.second;
+    }
+
+    for (auto &p : grid)
+        p.first = p.first / static_cast<float>(p.second);
+
+    for (int z{0}; z < zGrid; ++z)
+    {
+        for (int x{0}; x < xGrid; ++x)
+        {
+            auto& p = grid.at(x + z * zGrid);
+            p.first.x = x * ((max.x - min.x) / xGrid) + min.x;
+            p.first.y = z * ((max.z - min.z) / zGrid) + min.z;
+        }
+    }
+
+    // convert pair into only first of pair
+    std::vector<gsl::Vector3D> outputs{};
+    std::transform(grid.begin(), grid.end(), std::back_inserter(outputs), [](const std::pair<gsl::Vector3D, unsigned int>& p){
+        return p.first;
+    });
+    return outputs;
+}
+
 void LasMap::readFile()
 {
 //    LASreadOpener lasreadopener;
@@ -212,6 +275,7 @@ void LasMap::readFile(std::string filename)
         for (unsigned long long i = 0; i < N; ++i)
             points.at(i) = points.at(i * 4);
         points.resize(N);
+
         //qDebug() << "TriangleSurface file read: " << QString::fromStdString(filename);
     }
     else
