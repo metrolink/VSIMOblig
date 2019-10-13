@@ -93,7 +93,7 @@ void LasMap::printSomePoints()
 void LasMap::addAllPointsToVertices()
 {
     mVertices.clear();
-    for (auto point : lasloader)
+    for (auto point : points)
     {
             Vertex v{};
 //            v.set_xyz(point.xNorm(), point.yNorm(), point.zNorm());

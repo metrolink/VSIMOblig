@@ -68,7 +68,7 @@ public:
     friend std::istream& operator>> (std::istream& is, gsl::Vector3D& v)
     {
         char temp, temp2, temp3, temp4;
-        is >> v.x >> v.y >> v.z;
+        is >> v.x >> v.z >> v.y;
         return is;
     }
     QVector3D getQVector() const {
