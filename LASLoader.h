@@ -17,25 +17,15 @@
 #include <algorithm>
 #include <iterator>
 
-//#include "lasmap.h"
-#include "math_constants.h"
-#include "vertex.h"
-#include <QDebug>
-#include <cmath>
-//#include "vertex.h"
-
-//#include "visualobject.h"
-
 namespace gsl
 {
 constexpr bool VERBOSE = false;
-
 
 // TODO update so both 1.2 and 1.4 will work
 // - Add 1.3 and 1.4 formats
 // NB: For 32 bit compilator
 // 64 bit must use other types that are equal in bytesize.
-class LASLoader //: public VisualObject
+class LASLoader
 {
 public:
     unsigned short getCurrentYearLAS()
@@ -43,111 +33,6 @@ public:
         auto t = std::time(nullptr);
         return std::localtime(&t)->tm_year + 1900;
     }
-    LASLoader()
-    {
-
-    }
-    LASLoader(const std::string& file)
-    {
-        open(file);
-    }
-//    LASLoader(int whatever)
-//    {
-//        Vertex v{};
-//        v.set_xyz(0, 0, 0);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(0, 0);
-//        mVertices.push_back(v);
-//        v.set_xyz(2, 0, 0);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(1, 0);
-//        mVertices.push_back(v);
-//        v.set_xyz(2, 0, 2);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(1, 1);
-//        mVertices.push_back(v);
-//        v.set_xyz(0, 0, 0);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(0, 0);
-//        mVertices.push_back(v);
-//        v.set_xyz(2, 0, 2);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(1, 1);
-//        mVertices.push_back(v);
-//        v.set_xyz(0, 0, 2);
-//        v.set_rgb(0, 1, 0);
-//        v.set_uv(0, 1);
-//        mVertices.push_back(v);
-//    }
-    ~LASLoader()
-    {
-        close();
-    }
-
-//    void readFile(std::string filename)
-//    {
-////        mVertices.clear();
-
-//        std::vector <PointDataRecordData> currentPoints;
-//        currentPoints = readLAS(filename);
-
-//        qDebug() << "Current points:" << currentPoints.size();
-
-//        for (int i = 1000; i < 1005; ++i)
-//        {
-//            qDebug() << currentPoints[i].getX(this) << " " << currentPoints[i].getY(this) << " " << currentPoints[i].getZ(this);
-////            qDebug() << currentPoints[i].x << " " << currentPoints[i].y << " " << currentPoints[i].z << "\n" ;
-//        }
-
-
-
-//        for (auto currentPoint : currentPoints)
-//        {
-//            Vertex v{};
-//            v.set_xyz(currentPoint.getX(this), currentPoint.getY(this), currentPoint.getZ(this));
-//            v.set_rgb(0, 0, 0);
-//            v.set_uv(0, 0);
-//            mVertices.push_back(v);
-//        }
-
-//    }
-
-//    void init() override
-//    {
-//        //must call this to use OpenGL functions
-//        initializeOpenGLFunctions();
-
-//        //Vertex Array Object - VAO
-//        glGenVertexArrays(1, &mVAO);
-//        glBindVertexArray(mVAO);
-
-//        //Vertex Buffer Object to hold vertices - VBO
-//        glGenBuffers(1, &mVBO);
-//        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-
-//        glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW);
-
-//        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-//        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)0);
-//        glEnableVertexAttribArray(0);
-
-//        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)(3 * sizeof(GLfloat)));
-//        glEnableVertexAttribArray(1);
-
-//        // 3rd attribute buffer : uvs
-//        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)(6 * sizeof(GLfloat)));
-//        glEnableVertexAttribArray(2);
-
-//        glPointSize(6.f);
-
-//        glBindVertexArray(0);
-//    }
-
-//    void draw() override
-//    {
-//        glBindVertexArray(mVAO);
-//        glDrawArrays(GL_POINTS, 0, mVertices.size());
-//    }
     /** Standard type sizes for 32 bit compiler:
      * char = 1
      * short = 2
@@ -443,6 +328,15 @@ private:
     std::ifstream fstrm{};
 
 public:
+    LASLoader()
+    {
+
+    }
+
+    LASLoader(const std::string& file)
+    {
+        open(file);
+    }
 
     bool open(const std::string& file)
     {
@@ -598,7 +492,7 @@ public:
     }
     // File with full path
     // Stack overflow!
-    static std::vector<PointDataRecordData> readLAS(const std::string& file) //Modify this
+    static std::vector<PointDataRecordData> readLAS(const std::string& file)
     {
         LASLoader loader{};
         std::vector <PointDataRecordData> points;
@@ -631,6 +525,10 @@ public:
         return points;
     }
 
+    ~LASLoader()
+    {
+        close();
+    }
 
 };
 

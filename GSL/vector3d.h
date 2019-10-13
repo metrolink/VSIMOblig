@@ -65,7 +65,12 @@ public:
         out << "(" << rhs.x << "," << rhs.y << "," << rhs.z << ")";
         return out;
     } //    QVector3D getQVector() const;   //for use with qDebug()
-
+    friend std::istream& operator>> (std::istream& is, gsl::Vector3D& v)
+    {
+        char temp, temp2, temp3, temp4;
+        is >> v.x >> v.y >> v.z;
+        return is;
+    }
     QVector3D getQVector() const {
         return QVector3D(x, y, z);
     } //for use with qDebug()
