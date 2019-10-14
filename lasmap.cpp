@@ -77,7 +77,7 @@ void LasMap::init()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)(6 * sizeof(GLfloat)));
     glEnableVertexAttribArray(2);
 
-    glPointSize(1.f);
+    glPointSize(5.f);
 
     glBindVertexArray(0);
 }
@@ -108,6 +108,18 @@ void LasMap::addAllPointsToVertices()
             mVertices.push_back(v);
     }
 
+    //glPointSize(5);
+    std::vector<gsl::Vector3D> tempPoints;
+    tempPoints = mapToGrid(points, 10, 10, gsl::Vector3D(xMin, yMin, zMin), gsl::Vector3D(xMax, yMax, zMax));
+    for (auto point : tempPoints)
+    {
+            Vertex v{};
+            v.set_xyz(point.x, point.y + 0.5f, point.z);
+            v.set_rgb(0, 1, 0);
+            v.set_uv(0, 0);
+            mVertices.push_back(v);
+    }
+    std::cout << tempPoints.size();
 }
 
 void LasMap::normalizePoints()
@@ -137,7 +149,7 @@ void LasMap::normalizePoints()
     for (auto &point : points)
     {
         point.x = ((point.x - xMin)/(xMax - xMin) - 0.5) * scaleFactor;
-        point.y = ((point.y - yMin)/(yMax - yMin) - 0.5) * scaleFactor;
+        point.y = ((point.y - yMin)/(yMax - yMin) - 0.5) * -scaleFactor;
         point.z = ((point.z - zMin)/(zMax - zMin) - 0.5) * scaleFactor;
 
 //        point.x += 2;
@@ -149,10 +161,31 @@ void LasMap::normalizePoints()
 //        point.setZ((point.z - zMin)/(zMax - zMin));
     }
 
-    for (int i = 0; i < 5; ++i)
+    xValues.clear();
+    yValues.clear();
+    zValues.clear();
+    for (auto point : points)
     {
-        std::cout << points[i].getX() << " " << points[i].getY() << " " << points[i].getZ() << "\n";
+        xValues.push_back(point.x);
+        yValues.push_back(point.y);
+        zValues.push_back(point.z);
     }
+    std::sort(xValues.begin(), xValues.end());
+    std::sort(yValues.begin(), yValues.end());
+    std::sort(zValues.begin(), zValues.end());
+
+    xMin = xValues[0];
+    yMin = yValues[0];
+    zMin = zValues[0];
+
+    xMax = xValues[xValues.size() - 1];
+    yMax = yValues[yValues.size() - 1];
+    zMax = zValues[zValues.size() - 1];
+
+//    for (int i = 0; i < 5; ++i)
+//    {
+//        std::cout << points[i].getX() << " " << points[i].getY() << " " << points[i].getZ() << "\n";
+//    }
 
 //    double xTranslate = ((xValues[xValues.size() - 1]) - ((xValues[xValues.size() - 1] - xValues[0]) * 0.5));
 //    double yTranslate = ((zValues[xValues.size() - 1]) - ((zValues[xValues.size() - 1] - zValues[0]) * 0.5));
@@ -173,10 +206,10 @@ float LasMap::length(const gsl::Vector3D& a, const gsl::Vector3D& b)
     return static_cast<float>(std::sqrt(std::pow(a.x + b.x, 2) + std::pow(a.y + b.y, 2) + std::pow(a.z + b.z, 2)));
 }
 
-std::vector<gsl::Vector3D> LasMap::mapToGrid(int xGrid, int zGrid, gsl::Vector3D min, gsl::Vector3D max)
+std::vector<gsl::Vector3D> LasMap::mapToGrid(const std::vector<gsl::Vector3D> &points, int xGrid, int zGrid, gsl::Vector3D min, gsl::Vector3D max)
 {
     std::vector<std::pair<gsl::Vector3D, unsigned int>> grid;
-    grid.reserve(xGrid * zGrid);
+    grid.resize(xGrid * zGrid);
 
     for (auto point : points)
     {
@@ -197,7 +230,7 @@ std::vector<gsl::Vector3D> LasMap::mapToGrid(int xGrid, int zGrid, gsl::Vector3D
                     closestIndex[1] * ((max.z - min.z) / zGrid) + min.z
                 };
 
-                if (length(point, gridPoint) < length(point, lastClosestPoint))
+                if ((gsl::Vector3D{point.x, 0, point.z} - gridPoint).length() < (gsl::Vector3D{point.x, 0, point.z} - lastClosestPoint).length())
                 {
                     closestIndex[0] = x;
                     closestIndex[1] = z;
@@ -205,13 +238,21 @@ std::vector<gsl::Vector3D> LasMap::mapToGrid(int xGrid, int zGrid, gsl::Vector3D
             }
         }
 
+        // std::cout << "point is: " << point << std::endl;
+
         auto& p = grid.at(closestIndex[0] + closestIndex[1] * zGrid);
         p.first += point;
         ++p.second;
     }
 
     for (auto &p : grid)
-        p.first = p.first / static_cast<float>(p.second);
+        std::cout << "p before: " << p.first << std::endl;
+
+    for (auto &p : grid)
+        p.first = (0 < p.second) ? p.first / static_cast<float>(p.second) : gsl::Vector3D{0, 0, 0};
+
+    for (auto &p : grid)
+        std::cout << "p after: " << p.first << std::endl;
 
     for (int z{0}; z < zGrid; ++z)
     {
@@ -219,7 +260,7 @@ std::vector<gsl::Vector3D> LasMap::mapToGrid(int xGrid, int zGrid, gsl::Vector3D
         {
             auto& p = grid.at(x + z * zGrid);
             p.first.x = x * ((max.x - min.x) / xGrid) + min.x;
-            p.first.y = z * ((max.z - min.z) / zGrid) + min.z;
+            p.first.z = z * ((max.z - min.z) / zGrid) + min.z;
         }
     }
 
@@ -228,6 +269,7 @@ std::vector<gsl::Vector3D> LasMap::mapToGrid(int xGrid, int zGrid, gsl::Vector3D
     std::transform(grid.begin(), grid.end(), std::back_inserter(outputs), [](const std::pair<gsl::Vector3D, unsigned int>& p){
         return p.first;
     });
+
     return outputs;
 }
 
@@ -283,11 +325,11 @@ void LasMap::readFile(std::string filename)
         //qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
     }
 
-    for (int i = 0; i < 5; ++i)
-    {
-        std::cout << points[i].getX() << " " << points[i].getY() << " " << points[i].getZ() << "\n";
-    }
-    std::cout << "\n\n";
+//    for (int i = 0; i < 5; ++i)
+//    {
+//        std::cout << points[i].getX() << " " << points[i].getY() << " " << points[i].getZ() << "\n";
+//    }
+//    std::cout << "\n\n";
 
 //    for (int i = 0; i < points.size() - 1; i +=2)
 //    {
