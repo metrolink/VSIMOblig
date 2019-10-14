@@ -20,6 +20,7 @@ public:
     const Vector3D &operator=(const Vector3D &rhs); // v = v
     Vector3D operator+(const Vector3D &rhs) const;  // v + v
     Vector3D operator-(const Vector3D &rhs) const;  // v - v
+    Vector3D operator/ (float rhs) const;
     Vector3D &operator+=(const Vector3D &rhs);      // v += v
     Vector3D &operator-=(const Vector3D &rhs);      // v -= v
     Vector3D operator-() const;                     // -v
