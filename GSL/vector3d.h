@@ -21,7 +21,7 @@ public:
     Vector3D operator+(const Vector3D &rhs) const;  // v + v
 
     Vector3D operator/(const Vector3D &rhs) const;
-    Vector3D operator/(float scalar);
+    Vector3D operator/(float scalar) const;
     Vector3D operator-(const Vector3D &rhs) const; // v - v
     Vector3D &operator+=(const Vector3D &rhs);     // v += v
     Vector3D &operator-=(const Vector3D &rhs);     // v -= v
@@ -69,8 +69,7 @@ public:
         out << "(" << rhs.x << "," << rhs.y << "," << rhs.z << ")";
         return out;
     } //    QVector3D getQVector() const;   //for use with qDebug()
-    friend std::istream& operator>> (std::istream& is, gsl::Vector3D& v)
-    {
+    friend std::istream &operator>>(std::istream &is, gsl::Vector3D &v) {
         char temp, temp2, temp3, temp4;
         is >> v.x >> v.z >> v.y;
         return is;

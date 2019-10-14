@@ -34,7 +34,6 @@ Vector3D bezierCurve(std::vector<Vector3D> points, GLfloat t, unsigned long long
     return points[0];
 }
 
-//Calculates the points on a basis spline curve. Input t from 0 to 1.
 Vector3D bSpline(const std::vector<Vector3D> &points, const std::vector<GLfloat> &t, GLfloat x, unsigned long long degree) {
     //CALCULATE VALID KNOT INTERVAL 'MY'
     unsigned long long my;
@@ -66,107 +65,105 @@ Vector3D bSpline(const std::vector<Vector3D> &points, const std::vector<GLfloat>
             }
         }
     }
-    Vector3D up()
-    {
-        return Vector3D{0.f, 1.f, 0.f};
+
+    //MULTIPLY POINTS WITH BASIS FUNCTIONS
+    Vector3D result;
+    for (unsigned long long i = 0; i < points.size(); i++) {
+        result += points[i] * basis[i];
     }
 
-    Vector3D right()
-    {
-        return Vector3D{1.f, 0.f, 0.f};
-    }
+    return result;
+}
+Vector3D up() {
+    return Vector3D{0.f, 1.f, 0.f};
+}
 
-    Vector3D forward()
-    {
-        return Vector3D{0.f, 0.f, 1.f};
-    }
+Vector3D right() {
+    return Vector3D{1.f, 0.f, 0.f};
+}
 
-    Vector3D one()
-    {
-        return Vector3D{1.f, 1.f, 1.f};
-    }
+Vector3D forward() {
+    return Vector3D{0.f, 0.f, 1.f};
+}
 
-    Vector3D zero()
-    {
-        return Vector3D{0.f, 0.f, 0.f};
-    }
+Vector3D one() {
+    return Vector3D{1.f, 1.f, 1.f};
+}
 
-    GLfloat clamp(GLfloat x, GLfloat min, GLfloat max)
-    {
-        if (x < min)
-            x = min;
-        else if (x > max)
-            x = max;
+Vector3D zero() {
+    return Vector3D{0.f, 0.f, 0.f};
+}
 
-        return x;
-    }
+GLfloat clamp(GLfloat x, GLfloat min, GLfloat max) {
+    if (x < min)
+        x = min;
+    else if (x > max)
+        x = max;
 
-    Vector2D lerp2D(GLfloat time, Vector2D a, Vector2D b)
-    {
-        return (a * (1.f - time)) + (b * time);
-    }
+    return x;
+}
 
-    Vector3D lerp3D(GLfloat time, Vector3D a, Vector3D b)
-    {
-        return (a * (1.f - time)) + (b * time);
-    }
+Vector2D lerp2D(GLfloat time, Vector2D a, Vector2D b) {
+    return (a * (1.f - time)) + (b * time);
+}
 
-    float distanceToPlane(const Vector3D &point, const Vector3D &normal, const Vector3D &pointInPlane)
-    {
-//        Bruk planformelen Ax + By + Cz - D = 0 (hvor (A,B,C) er plan-normalen og D blir regnet ut ved å legge et punkt i x, y, z).
-//        Nærmeste avstand fra et point til dette planet er:
-//        d = (Ax+By+Cz-D)/sqrt(A*A + B*B + C*C)
-//        hvor x,y,z er koordinatene til point. Hvis resultatet er positivt er punktet på siden av plan-normalen.
-//        sqrt(A*A + B*B + C*C) vil være 1, hvis normalen er normalisert!
+Vector3D lerp3D(GLfloat time, Vector3D a, Vector3D b) {
+    return (a * (1.f - time)) + (b * time);
+}
 
-        float D =
-                normal.x * pointInPlane.x +
-                normal.y * pointInPlane.y +
-                normal.z * pointInPlane.z;
+float distanceToPlane(const Vector3D &point, const Vector3D &normal, const Vector3D &pointInPlane) {
+    //        Bruk planformelen Ax + By + Cz - D = 0 (hvor (A,B,C) er plan-normalen og D blir regnet ut ved å legge et punkt i x, y, z).
+    //        Nærmeste avstand fra et point til dette planet er:
+    //        d = (Ax+By+Cz-D)/sqrt(A*A + B*B + C*C)
+    //        hvor x,y,z er koordinatene til point. Hvis resultatet er positivt er punktet på siden av plan-normalen.
+    //        sqrt(A*A + B*B + C*C) vil være 1, hvis normalen er normalisert!
 
-        float distance =
-                normal.x * point.x +
-                normal.y * point.y +
-                normal.z * point.z -
-                D;
+    float D =
+        normal.x * pointInPlane.x +
+        normal.y * pointInPlane.y +
+        normal.z * pointInPlane.z;
 
-        return distance;
-    }
+    float distance =
+        normal.x * point.x +
+        normal.y * point.y +
+        normal.z * point.z -
+        D;
 
-    bool withinPlane(const Vector3D &point, Matrix4x4 &modelMatrix, Vector2D upright, Vector2D downleft)
-    {
-        Matrix4x4 inversed = modelMatrix;
-        inversed.inverse();
-        //rotate point to local space of Plane
-        Vector4D transposedPoint = inversed * Vector4D(point, 1.f);
+    return distance;
+}
 
-        qDebug() << "TransposedPoint: " << transposedPoint.toVector3D();
+bool withinPlane(const Vector3D &point, Matrix4x4 &modelMatrix, Vector2D upright, Vector2D downleft) {
+    Matrix4x4 inversed = modelMatrix;
+    inversed.inverse();
+    //rotate point to local space of Plane
+    Vector4D transposedPoint = inversed * Vector4D(point, 1.f);
 
-        //Test if point is within x and y
+    qDebug() << "TransposedPoint: " << transposedPoint.toVector3D();
 
-        bool xDirection{false};
-        bool yDirection{false};
-        if (transposedPoint.x <= upright.x && transposedPoint.x >= downleft.x)
-            xDirection = true;
-        if (transposedPoint.y <= upright.y && transposedPoint.y >= downleft.y)
-            yDirection = true;
+    //Test if point is within x and y
 
-        if (xDirection && yDirection)
-            return true;
-        else
-            return false;
-    }
+    bool xDirection{false};
+    bool yDirection{false};
+    if (transposedPoint.x <= upright.x && transposedPoint.x >= downleft.x)
+        xDirection = true;
+    if (transposedPoint.y <= upright.y && transposedPoint.y >= downleft.y)
+        yDirection = true;
 
-    GLdouble newtons2Law(GLdouble landMass, GLdouble ballMass, GLdouble distance)
-    {
-        double m1 = landMass;
-        double m2 = ballMass;
-        double r2 = distance;
-        double G = 6.6742E-11;
+    if (xDirection && yDirection)
+        return true;
+    else
+        return false;
+}
 
-        double Force = (G*m1*m2)/(r2*r2);
+GLdouble newtons2Law(GLdouble landMass, GLdouble ballMass, GLdouble distance) {
+    double m1 = landMass;
+    double m2 = ballMass;
+    double r2 = distance;
+    double G = 6.6742E-11;
 
-        return Force;
-    }
+    double Force = (G * m1 * m2) / (r2 * r2);
 
-} //namespace
+    return Force;
+}
+
+} // namespace gsl
