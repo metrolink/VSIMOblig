@@ -1,16 +1,14 @@
 #include "visualobject.h"
 #include "shader.h"
-
-VisualObject::VisualObject() {
+VisualObject::VisualObject(TriangleArray *triangles) : mObjectTriangles(triangles) {
     mTransMatrix.setToIdentity();
     mRotMatrix.setToIdentity();
     mScaleMatrix.setToIdentity();
 }
 
-VisualObject::~VisualObject()
-{
-//    glDeleteVertexArrays(1, &mVAO); /TODO, fix this
-//    glDeleteBuffers(1, &mVBO);
+VisualObject::~VisualObject() {
+    //    glDeleteVertexArrays(1, &mVAO); /TODO, fix this
+    //    glDeleteBuffers(1, &mVBO);
 }
 void VisualObject::move(gsl::Vector3D vec) {
     mTransMatrix.setToIdentity();

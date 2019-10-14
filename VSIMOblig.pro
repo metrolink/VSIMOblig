@@ -24,7 +24,7 @@ SOURCES += main.cpp \
     rollingstone.cpp \
     shader.cpp \
     mainwindow.cpp \
-    triangle.cpp \
+    trianglearray.cpp \
     texture.cpp \
     vertex.cpp \
     xyz.cpp \
@@ -53,7 +53,7 @@ HEADERS += \
     rollingstone.h \
     shader.h \
     mainwindow.h \
-    triangle.h \
+    trianglearray.h \
     texture.h \
     vertex.h \
     xyz.h \
