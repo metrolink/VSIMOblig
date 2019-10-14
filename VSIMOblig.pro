@@ -24,7 +24,7 @@ SOURCES += main.cpp \
     rollingstone.cpp \
     shader.cpp \
     mainwindow.cpp \
-    triangle.cpp \
+    trianglearray.cpp \
     texture.cpp \
     vertex.cpp \
     xyz.cpp \
@@ -34,6 +34,7 @@ SOURCES += main.cpp \
     camera.cpp \
     octahedronball.cpp \
     tree.cpp \
+    plane.cpp \
     beziercurve.cpp
 
 HEADERS += \
@@ -52,7 +53,7 @@ HEADERS += \
     rollingstone.h \
     shader.h \
     mainwindow.h \
-    triangle.h \
+    trianglearray.h \
     texture.h \
     vertex.h \
     xyz.h \
@@ -63,6 +64,7 @@ HEADERS += \
     camera.h \
     octahedronball.h \
     tree.h \
+    plane.h \
     beziercurve.h
 
 FORMS += \

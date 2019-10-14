@@ -3,8 +3,7 @@
 
 Vertex::Vertex() {}
 
-Vertex::Vertex(float x, float y, float z, float r, float g, float b)
-{
+Vertex::Vertex(float x, float y, float z, float r, float g, float b) {
     mXYZ.setX(x);
     mXYZ.setY(y);
     mXYZ.setZ(z);
@@ -14,8 +13,7 @@ Vertex::Vertex(float x, float y, float z, float r, float g, float b)
     mNormal.setZ(b);
 }
 
-Vertex::Vertex(gsl::Vector3D a, gsl::Vector3D b, gsl::Vector2D c)
-{
+Vertex::Vertex(gsl::Vector3D a, gsl::Vector3D b, gsl::Vector2D c) {
     mXYZ = a;
     mNormal = b;
     mST = c;
@@ -23,78 +21,66 @@ Vertex::Vertex(gsl::Vector3D a, gsl::Vector3D b, gsl::Vector2D c)
 
 Vertex::~Vertex() {}
 
-void Vertex::set_xyz(GLfloat *xyz)
-{
+void Vertex::set_xyz(GLfloat *xyz) {
     mXYZ.setX(xyz[0]);
     mXYZ.setY(xyz[1]);
     mXYZ.setZ(xyz[2]);
 }
 
-void Vertex::set_xyz(GLfloat x, GLfloat y, GLfloat z)
-{
+void Vertex::set_xyz(GLfloat x, GLfloat y, GLfloat z) {
     mXYZ.setX(x);
     mXYZ.setY(y);
     mXYZ.setZ(z);
 }
 
-void Vertex::set_xyz(gsl::Vector3D xyz_in)
-{
+void Vertex::set_xyz(gsl::Vector3D xyz_in) {
     mXYZ = xyz_in;
 }
 
-void Vertex::set_rgb(GLfloat *rgb)
-{
+void Vertex::set_rgb(GLfloat *rgb) {
     mNormal.setX(rgb[0]);
     mNormal.setY(rgb[1]);
     mNormal.setZ(rgb[2]);
 }
 
-void Vertex::set_rgb(GLfloat r, GLfloat g, GLfloat b)
-{
+void Vertex::set_rgb(GLfloat r, GLfloat g, GLfloat b) {
     mNormal.setX(r);
     mNormal.setY(g);
     mNormal.setZ(b);
 }
 
-void Vertex::set_normal(GLfloat *normal)
-{
+void Vertex::set_normal(GLfloat *normal) {
     mNormal.setX(normal[0]);
     mNormal.setY(normal[1]);
     mNormal.setZ(normal[2]);
 }
 
-void Vertex::set_normal(GLfloat x, GLfloat y, GLfloat z)
-{
+void Vertex::set_normal(GLfloat x, GLfloat y, GLfloat z) {
     mNormal.setX(x);
     mNormal.setY(y);
     mNormal.setZ(z);
 }
 
-void Vertex::set_normal(gsl::Vector3D normal_in)
-{
+void Vertex::set_normal(gsl::Vector3D normal_in) {
     mNormal = normal_in;
 }
 
-void Vertex::set_st(GLfloat *st)
-{
+void Vertex::set_st(GLfloat *st) {
     mST.setX(st[0]);
     mST.setY(st[1]);
 }
 
-void Vertex::set_st(GLfloat s, GLfloat t)
-{
+void Vertex::set_st(GLfloat s, GLfloat t) {
     mST.setX(s);
     mST.setY(t);
 }
 
-void Vertex::set_uv(GLfloat u, GLfloat v)
-{
+void Vertex::set_uv(GLfloat u, GLfloat v) {
     mST.setX(u);
     mST.setY(v);
 }
 
-gsl::Vector3D Vertex::XYZ() const
-{
+gsl::Vector3D Vertex::XYZ() const {
     return mXYZ;
 }
 
@@ -106,8 +92,7 @@ gsl::Vector3D Vertex::XYZ() const
 //   return os;
 //}
 
-std::ostream &operator<<(std::ostream &os, const Vertex &v)
-{
+std::ostream &operator<<(std::ostream &os, const Vertex &v) {
     os << std::fixed;
     os << "(" << v.mXYZ.getX() << ", " << v.mXYZ.getY() << ", " << v.mXYZ.getZ() << ") ";
     os << "(" << v.mNormal.getX() << ", " << v.mNormal.getY() << ", " << v.mNormal.getZ() << ") ";
@@ -115,12 +100,37 @@ std::ostream &operator<<(std::ostream &os, const Vertex &v)
     return os;
 }
 
-std::istream &operator>>(std::istream &is, Vertex &v)
-{
+std::istream &operator>>(std::istream &is, Vertex &v) {
     // needs 4 temps to get commas and parenthesis
     char temp, temp2, temp3, temp4;
     is >> temp >> v.mXYZ.x >> temp2 >> v.mXYZ.y >> temp3 >> v.mXYZ.z >> temp4;
     is >> temp >> v.mNormal.x >> temp2 >> v.mNormal.y >> temp3 >> v.mNormal.z >> temp4;
     is >> temp >> v.mST.x >> temp2 >> v.mST.y >> temp3;
     return is;
+}
+float &Vertex::operator[](int index) {
+    switch (index) {
+    case 0:
+        return mXYZ.x;
+    case 1:
+        return mXYZ.y;
+    case 2:
+        return mXYZ.z;
+    case 3:
+        return mNormal.x;
+    case 4:
+        return mNormal.y;
+    case 5:
+        return mNormal.z;
+    case 6:
+        return mST.x;
+    case 7:
+        return mST.y;
+    default:
+        throw std::out_of_range("Vertex index must be between 0-7!");
+    }
+}
+
+bool Vertex::operator==(const Vertex &vert) {
+    return mXYZ == vert.mXYZ && mNormal == vert.mNormal && mST == vert.mST;
 }

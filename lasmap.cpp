@@ -2,36 +2,35 @@
 #include "math_constants.h"
 #include "vertex.h"
 #include <QDebug>
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 
-LasMap::LasMap()
-{
-//    Vertex v{};
-//    v.set_xyz(0, 0, 0);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(0, 0);
-//    mVertices.push_back(v);
-//    v.set_xyz(2, 0, 0);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(1, 0);
-//    mVertices.push_back(v);
-//    v.set_xyz(2, 0, 2);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(1, 1);
-//    mVertices.push_back(v);
-//    v.set_xyz(0, 0, 0);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(0, 0);
-//    mVertices.push_back(v);
-//    v.set_xyz(2, 0, 2);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(1, 1);
-//    mVertices.push_back(v);
-//    v.set_xyz(0, 0, 2);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(0, 1);
-//    mVertices.push_back(v);
+LasMap::LasMap() {
+    //    Vertex v{};
+    //    v.set_xyz(0, 0, 0);
+    //    v.set_rgb(0, 1, 0);
+    //    v.set_uv(0, 0);
+    //    mVertices.push_back(v);
+    //    v.set_xyz(2, 0, 0);
+    //    v.set_rgb(0, 1, 0);
+    //    v.set_uv(1, 0);
+    //    mVertices.push_back(v);
+    //    v.set_xyz(2, 0, 2);
+    //    v.set_rgb(0, 1, 0);
+    //    v.set_uv(1, 1);
+    //    mVertices.push_back(v);
+    //    v.set_xyz(0, 0, 0);
+    //    v.set_rgb(0, 1, 0);
+    //    v.set_uv(0, 0);
+    //    mVertices.push_back(v);
+    //    v.set_xyz(2, 0, 2);
+    //    v.set_rgb(0, 1, 0);
+    //    v.set_uv(1, 1);
+    //    mVertices.push_back(v);
+    //    v.set_xyz(0, 0, 2);
+    //    v.set_rgb(0, 1, 0);
+    //    v.set_uv(0, 1);
+    //    mVertices.push_back(v);
 
     //printSomePoints();
     readFile("../VSIMOblig/LASdata/fuck.txt");
@@ -39,20 +38,16 @@ LasMap::LasMap()
     readFile("../VSIMOblig/LASdata/fuck3.txt");
     readFile("../VSIMOblig/LASdata/fuck4.txt");
     readFile("../VSIMOblig/LASdata/fuck5.txt");
-//    readFile("../VSIMOblig/LASdata/33-1-497-327-20.txt");
+    //    readFile("../VSIMOblig/LASdata/33-1-497-327-20.txt");
     normalizePoints();
     addAllPointsToVertices();
     //centerMap();
-
 }
 
-LasMap::~LasMap()
-{
-
+LasMap::~LasMap() {
 }
 
-void LasMap::init()
-{
+void LasMap::init() {
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
@@ -76,28 +71,31 @@ void LasMap::init()
     // 3rd attribute buffer : uvs
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)(6 * sizeof(GLfloat)));
     glEnableVertexAttribArray(2);
-
-    glPointSize(1.f);
+    if (mIndices.size() > 0) {
+        glGenBuffers(1, &mEAB);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEAB);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
+    }
 
     glBindVertexArray(0);
 }
 
-void LasMap::draw()
-{
+void LasMap::draw() {
     glBindVertexArray(mVAO);
-    glDrawArrays(GL_POINTS, 0, mVertices.size());
+    if (mIndices.size() > 0)
+        glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, nullptr);
+    else
+        glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
 }
 
-void LasMap::printSomePoints()
-{
-    for (auto point = lasloader.begin() + 10; point != lasloader.end() - 25; ++point)
-    {
-        std::cout << "Point: (" << point->xNorm() << ", " << point->yNorm() << ", " << point->zNorm() << ")" << std::endl;
-    }
+void LasMap::printSomePoints() {
+    //    for (auto point = lasloader.begin() + 10; point != lasloader.end() - 25; ++point)
+    //    {
+    //        std::cout << "Point: (" << point->xNorm() << ", " << point->yNorm() << ", " << point->zNorm() << ")" << std::endl;
+    //    }
 }
 
-void LasMap::addAllPointsToVertices()
-{
+void LasMap::addAllPointsToVertices() {
     mVertices.clear();
     for (auto point : points)
     {
@@ -107,17 +105,14 @@ void LasMap::addAllPointsToVertices()
             v.set_uv(0, 0);
             mVertices.push_back(v);
     }
-
 }
 
-void LasMap::normalizePoints()
-{
+void LasMap::normalizePoints() {
     std::vector<float> xValues;
     std::vector<float> zValues;
     std::vector<float> yValues;
 
-    for (auto point : points)
-    {
+    for (auto point : points) {
         xValues.push_back(point.x);
         yValues.push_back(point.y);
         zValues.push_back(point.z);
@@ -134,36 +129,33 @@ void LasMap::normalizePoints()
     yMax = yValues[yValues.size() - 1];
     zMax = zValues[zValues.size() - 1];
 
-    for (auto &point : points)
-    {
-        point.x = ((point.x - xMin)/(xMax - xMin) - 0.5) * scaleFactor;
-        point.y = ((point.y - yMin)/(yMax - yMin) - 0.5) * scaleFactor;
-        point.z = ((point.z - zMin)/(zMax - zMin) - 0.5) * scaleFactor;
+    for (auto &point : points) {
+        point.x = ((point.x - xMin) / (xMax - xMin) - 0.5) * scaleFactor;
+        point.y = ((point.y - yMin) / (yMax - yMin) - 0.5) * scaleFactor;
+        point.z = ((point.z - zMin) / (zMax - zMin) - 0.5) * scaleFactor;
 
-//        point.x += 2;
-//        point.y += 1;
-//        point.z += 4;
+        //        point.x += 2;
+        //        point.y += 1;
+        //        point.z += 4;
 
-//        point.setX((point.x - xMin)/(xMax - xMin));
-//        point.setY((point.y - yMin)/(yMax - yMin));
-//        point.setZ((point.z - zMin)/(zMax - zMin));
+        //        point.setX((point.x - xMin)/(xMax - xMin));
+        //        point.setY((point.y - yMin)/(yMax - yMin));
+        //        point.setZ((point.z - zMin)/(zMax - zMin));
     }
 
-    for (int i = 0; i < 5; ++i)
-    {
+    for (int i = 0; i < 5; ++i) {
         std::cout << points[i].getX() << " " << points[i].getY() << " " << points[i].getZ() << "\n";
     }
 
-//    double xTranslate = ((xValues[xValues.size() - 1]) - ((xValues[xValues.size() - 1] - xValues[0]) * 0.5));
-//    double yTranslate = ((zValues[xValues.size() - 1]) - ((zValues[xValues.size() - 1] - zValues[0]) * 0.5));
-//    double zTranslate = ((yValues[xValues.size() - 1]) - ((yValues[xValues.size() - 1] - yValues[0]) * 0.5));
+    //    double xTranslate = ((xValues[xValues.size() - 1]) - ((xValues[xValues.size() - 1] - xValues[0]) * 0.5));
+    //    double yTranslate = ((zValues[xValues.size() - 1]) - ((zValues[xValues.size() - 1] - zValues[0]) * 0.5));
+    //    double zTranslate = ((yValues[xValues.size() - 1]) - ((yValues[xValues.size() - 1] - yValues[0]) * 0.5));
 
-//    double scaleNumber = 1;
-//    scale(scaleNumber);
-//    move(gsl::Vector3D(-xTranslate * scaleNumber, -zTranslate * scaleNumber, -yTranslate * scaleNumber));
+    //    double scaleNumber = 1;
+    //    scale(scaleNumber);
+    //    move(gsl::Vector3D(-xTranslate * scaleNumber, -zTranslate * scaleNumber, -yTranslate * scaleNumber));
     //mMatrix.translate(-xTranslate, -yTranslate, -zTranslate);
     //mMatrix.translate(2, 2, 2);
-
 
     ////    move(gsl::Vector3D(-483197.75, -7569861.26, 0.70));
 }
@@ -249,26 +241,29 @@ void LasMap::readFile()
 
 }
 
-void LasMap::readFile(std::string filename)
-{
+void LasMap::readFile(std::string filename) {
     std::ifstream inn;
 
     inn.open(filename);
 
-    if (inn.is_open())
-    {
+    if (inn.is_open()) {
         unsigned int n;
-        gsl::Vector3D vertex;
+        Vertex vertex;
+        std::vector<Vertex> vertices;
+        mObjectTriangles = new TriangleArray;
         inn >> n;
         points.reserve(n);
-        for (unsigned int i = 0; i < n; i++)
-        {
+        for (unsigned int i = 0; i < n; i++) {
             inn >> vertex;
-            points.push_back(vertex);
+            //            points.push_back(vertex);
+            vertices.push_back(vertex);
 
             std::string str;
             std::getline(inn, str);
         }
+        mObjectTriangles->push_back(vertices);
+        mVertices = mObjectTriangles->getVertices();
+        mIndices = mObjectTriangles->getIndices();
         inn.close();
 
         unsigned long long N = points.size() / 4;
@@ -277,17 +272,15 @@ void LasMap::readFile(std::string filename)
         points.resize(N);
 
         //qDebug() << "TriangleSurface file read: " << QString::fromStdString(filename);
-    }
-    else
-    {
+    } else {
         //qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
     }
 
-    for (int i = 0; i < 5; ++i)
-    {
-        std::cout << points[i].getX() << " " << points[i].getY() << " " << points[i].getZ() << "\n";
-    }
+    //    for (int i = 0; i < 5; ++i) {
+    //        std::cout << points[i].getX() << " " << points[i].getY() << " " << points[i].getZ() << "\n";
+    //    }
     std::cout << "\n\n";
+
 
 //    for (int i = 0; i < points.size() - 1; i +=2)
 //    {
@@ -297,5 +290,3 @@ void LasMap::readFile(std::string filename)
 
 //    std::cout << std::setprecision(10) << points.size() << "\n";
 }
-
-

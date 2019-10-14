@@ -48,6 +48,7 @@ private:
     void calculateKeyInputs();
     bool playerCaught{false};
     std::vector<gsl::Vector3D> mSurfacePoints;
+    Collision *collisionSystem;
 
     TriangleSurface *mNPC;
     float mNPCSpeed{1.5};
