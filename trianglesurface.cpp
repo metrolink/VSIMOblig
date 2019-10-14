@@ -1,6 +1,5 @@
 #include "trianglesurface.h"
 #include "math_constants.h"
-#include "trianglearray.h"
 #include "vertex.h"
 #include <QDebug>
 #include <cmath>
@@ -39,8 +38,6 @@ TriangleSurface::TriangleSurface(std::string filename) : VisualObject() {
     readFile(filename);
     mMatrix.setToIdentity();
 }
-TriangleSurface::~TriangleSurface() {
-}
 std::vector<gsl::Vector3D> TriangleSurface::getTrianglePoints() {
     std::vector<gsl::Vector3D> worldPoints;
     for (Vertex vert : mVertices) {
@@ -49,6 +46,8 @@ std::vector<gsl::Vector3D> TriangleSurface::getTrianglePoints() {
         worldPoints.push_back(point3d);
     }
     return worldPoints;
+}
+TriangleSurface::~TriangleSurface() {
 }
 
 void TriangleSurface::init() {
@@ -75,21 +74,13 @@ void TriangleSurface::init() {
     // 3rd attribute buffer : uvs
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)(6 * sizeof(GLfloat)));
     glEnableVertexAttribArray(2);
-    if (mIndices.size() > 0) {
-        glGenBuffers(1, &mEAB);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEAB);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
-    }
 
     glBindVertexArray(0);
 }
 
 void TriangleSurface::draw() {
     glBindVertexArray(mVAO);
-    if (mIndices.size() > 0)
-        glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, nullptr);
-    else
-        glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
+    glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
 }
 
 void TriangleSurface::readFile(std::string filename) {
@@ -99,17 +90,12 @@ void TriangleSurface::readFile(std::string filename) {
     if (inn.is_open()) {
         unsigned long n;
         Vertex vertex;
-        std::vector<Vertex> vertices;
-        mObjectTriangles = new TriangleArray;
         inn >> n;
         mVertices.reserve(n);
         for (unsigned long i = 0; i < n; i++) {
             inn >> vertex;
-            vertices.push_back(vertex);
+            mVertices.push_back(vertex);
         }
-        mObjectTriangles->push_back(vertices);
-        mVertices = mObjectTriangles->getVertices();
-        mIndices = mObjectTriangles->getIndices();
         inn.close();
     } else {
         qDebug() << "Error: " << filename.c_str() << " could not be opened!";

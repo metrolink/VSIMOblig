@@ -7,7 +7,8 @@
 #include <fstream>
 #include <iostream>
 
-class Vertex {
+class Vertex
+{
 public:
     Vertex();
     Vertex(float x, float y, float z, float r, float g, float b);
@@ -33,9 +34,6 @@ public:
     void set_uv(GLfloat u, GLfloat v);
 
     gsl::Vector3D XYZ() const;
-
-    float &operator[](int index);
-    bool operator==(const Vertex &vert);
 
 private:
     gsl::Vector3D mXYZ;

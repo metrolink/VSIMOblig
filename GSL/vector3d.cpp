@@ -26,15 +26,13 @@ Vector3D Vector3D::operator+(const Vector3D &rhs) const {
     return {x + rhs.getX(), y + rhs.getY(), z + rhs.getZ()};
 }
 
-Vector3D Vector3D::operator/(const Vector3D &rhs) const {
-    return {x / rhs.x, y / rhs.y, z / rhs.z};
-}
-Vector3D Vector3D::operator/(float scalar) const {
-    return {x / scalar, y / scalar, z / scalar};
-}
-
 Vector3D Vector3D::operator-(const Vector3D &rhs) const {
     return {x - rhs.getX(), y - rhs.getY(), z - rhs.getZ()};
+}
+
+Vector3D Vector3D::operator/(float rhs) const
+{
+    return {x / rhs, y / rhs, z / rhs};
 }
 
 Vector3D &Vector3D::operator+=(const Vector3D &rhs) {

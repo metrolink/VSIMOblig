@@ -3,14 +3,16 @@
 
 #include "matrix4x4.h"
 #include "shader.h"
-#include "trianglearray.h"
 #include "vertex.h"
 #include <QOpenGLFunctions_4_1_Core>
 #include <vector>
+
 class RenderWindow;
-class VisualObject : public QOpenGLFunctions_4_1_Core {
+
+class VisualObject : public QOpenGLFunctions_4_1_Core
+{
 public:
-    VisualObject(TriangleArray *triangles = nullptr);
+    VisualObject();
     virtual ~VisualObject();
     virtual void init();
     virtual void draw() = 0;
@@ -34,7 +36,6 @@ protected:
     std::vector<GLuint> mIndices;
     gsl::Matrix4x4 mMatrix;
     gsl::Matrix4x4 mTransMatrix, mRotMatrix, mScaleMatrix;
-    TriangleArray *mObjectTriangles{nullptr};
     bool useTextures{false};
     GLuint mVAO{0};
     GLuint mVBO{0};

@@ -1,6 +1,4 @@
 #include "collision.h"
-#include "plane.h"
-#include "rollingstone.h"
 #include "trianglesurface.h"
 Collision::Collision() {
 }
@@ -17,32 +15,33 @@ vec3 Collision::barycentricCoordinates(const vec3 &point, const vec3 &pointA, co
     vec3 v1 = pointC - pointA;
     vec3 v2 = point - pointA;
 
-    float v0Sqr = vec3::dot(v0, v0);
-    float v0Dotv1 = vec3::dot(v0, v1);
-    float v1Sqr = vec3::dot(v1, v1);
-    float v2Dotv0 = vec3::dot(v2, v0);
-    float v2Dotv1 = vec3::dot(v2, v1);
+    float v0Sqr = v0 * v0;
+    float v0Dotv1 = v0 * v1;
+    float v1Sqr = v1 * v1;
+    float v2Dotv0 = v2 * v0;
+    float v2Dotv1 = v2 * v1;
     float denom = v0Sqr * v1Sqr - v0Dotv1 * v0Dotv1;
     vec3 baryc;
-    baryc.x = (v1Sqr * v2Dotv0 - v0Dotv1 * v2Dotv1) / denom;
-    baryc.y = (v0Sqr * v2Dotv1 - v0Dotv1 * v2Dotv0) / denom;
-    baryc.setZ(1.0f - baryc.x - baryc.y);
-    //    qDebug() << baryc.x << baryc.y << baryc.z;
+    baryc.setX((v1Sqr * v2Dotv0 - v0Dotv1 * v2Dotv1) / denom);
+    baryc.setY((v0Sqr * v2Dotv1 - v0Dotv1 * v2Dotv0) / denom);
+    baryc.setZ(1.0f - baryc.getX() - baryc.getY());
     return baryc;
 }
-std::tuple<vec3, double> Collision::getBallNormal(std::vector<vec3> triangle, RollingStone &ball) {
-    // Make the plane containing this triangle
-    PLANE trianglePlane(triangle[0], triangle[1], triangle[2]);
-    double signedDistToTrianglePlane = std::fabs(trianglePlane.signedDistanceTo(ball.getPosition() - vec3(0.2f, 0.2f, 0.2f)));
-    // Is triangle front-facing to the velocity vector?
-    // We only check front-facing triangles
-    //    if (trianglePlane.isFrontFacingTo(ball.velocity().normalized())) {
-    //        // Calculate the signed distance from sphere position to triangle plane
-    //    }
-
+std::tuple<bool, vec3, vec3> Collision::getBallNormal(const vec3 &ballPos, TriangleSurface *surface) {
     vec3 normal{0};
-    normal = vec3::cross(triangle[2] - triangle[0], triangle[1] - triangle[0]);
-    normal.normalize();
-
-    return std::tuple<vec3, double>(normal, signedDistToTrianglePlane);
+    vec3 tempPos{0};
+    bool hitResult{false};
+    std::vector<vec3> triangleSurfaces = surface->getTrianglePoints();
+    for (size_t i = 0; i < triangleSurfaces.size(); i += 3) {
+        // Check every three surface points for the triangle
+        vec3 baryc = barycentricCoordinates(ballPos, triangleSurfaces[i], triangleSurfaces[i + 1], triangleSurfaces[i + 2]);
+        if (baryc.getX() >= 0 && baryc.getY() >= 0 && (baryc.getY() + baryc.getX()) <= 1) {
+            normal = vec3::cross(triangleSurfaces[i + 2] - triangleSurfaces[i], triangleSurfaces[i + 1] - triangleSurfaces[i]);
+            normal.normalize();
+            tempPos = (triangleSurfaces[i] * baryc.x + triangleSurfaces[i + 1] * baryc.y + triangleSurfaces[i + 2] * baryc.z);
+            hitResult = true;
+            break;
+        }
+    }
+    return std::tuple<bool, vec3, vec3>(hitResult, normal, tempPos);
 }

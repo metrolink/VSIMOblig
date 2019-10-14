@@ -5,62 +5,41 @@
 RollingStone::RollingStone() {
     collisionSystem = new Collision;
 }
-
-void RollingStone::update() {
-    if (!currentTriangle.empty()) {
-        auto [normal, distance] = collisionSystem->getBallNormal(currentTriangle, *this);
-        calculateVelocity(normal, distance);
-    } else
-        calculateVelocity(vec3(0), radius());
+void RollingStone::update(TriangleSurface *obj) {
+    auto [hitResult, normal, position] = collisionSystem->getBallNormal(getPosition(), obj);
+    if (hitResult) {
+        calculateVelocity(normal, position);
+        move(getPosition() + velocity());
+    }
 }
 vec3 RollingStone::velocity() const {
     return mVelocity;
 }
-void RollingStone::calculateVelocity(vec3 normal, double distanceToTriangle) {
-    //    if (distanceToTriangle > radius()) { // Not in contact with triangle, no directional force applied
-    //        normal = vec3(0);
-    //        qDebug() << "X-Acceleration = " << 0 << "Y-Acceleration = " << gravity.y;
-    //    } else {
-    // acos(normal.y) = 30 degrees in radians
-    // sin(30 degrees/0.5 rads) * gravity.y
+void RollingStone::calculateVelocity(vec3 normal, vec3 vecToTri) {
+    vec3 N = normal * vec3::dot(-gravity, normal);
+    float distanceToTriangle = vec3::dot(getPosition() - vecToTri, normal);
 
-    //        qDebug() << force;
-    //        float distance = radius() - distanceToTriangle;
-    //        if (distance > 0.2f)
-    //            mTransMatrix.translate(normal * distance);
-    //    }
-    //    if (normal != lastNormal) {
-    //        if (normal == vec3(0)) {
-    //        } else if (lastNormal == vec3(0)) {
-    //            mVelocity = (gravity + N).normalized() * vec3::dot(velocity(), (gravity + N).normalized());
-    //        } else {
-    //            vec3 tempNormal = normal + lastNormal;
-    //            tempNormal.normalize();
-    //            vec3 tempVelocity = tempNormal * vec3::dot(velocity(), tempNormal);
-    //            tempVelocity = velocity() - tempVelocity * 2;
-    //            mVelocity = tempVelocity;
-    //        }
-    //    }
-    //    lastNormal = normal;
-
-    vec3 newPos = getPosition();
-    newPos += (velocity() * deltaTime) + (mAcceleration * 0.5 * pow(deltaTime, 2));
-    move(newPos);
-
-    vec3 force = gravity * mMass;
-
-    if (distanceToTriangle <= radius()) {
-        float Ax = -gravity.y * normal.y;
-        float Ay = gravity.y * acos(normal.y);
-        float Az = -gravity.y * normal.y;
-        force.x = Ax;
-        force.y = Ay;
-        force.z = Az;
+    if (distanceToTriangle > radius()) {
+        normal = vec3(0);
+        N = vec3(0);
+    } else {
+        float distance = radius() - distanceToTriangle;
+        if (distance > 0.2f)
+            getModelMatrix().translate(normal * distance);
     }
-    //    qDebug() << force;
-
-    vec3 newAcceleration = force / mMass;
-    vec3 deltaV = (mAcceleration + newAcceleration) * (0.5 * deltaTime);
-    deltaV = deltaV * 100;
-    mVelocity = deltaV;
+    if (normal != lastNormal) {
+        if (normal == vec3(0)) {
+        } else if (lastNormal == vec3(0)) {
+            mVelocity = (gravity + N).normalized() * vec3::dot(velocity(), (gravity + N).normalized());
+        } else {
+            vec3 tempNormal = normal + lastNormal;
+            tempNormal.normalize();
+            vec3 tempVelocity = tempNormal * vec3::dot(velocity(), tempNormal);
+            tempVelocity = velocity() - tempVelocity * 2;
+            mVelocity = tempVelocity;
+        }
+    }
+    lastNormal = normal;
+    mAcceleration = (N + gravity);
+    mVelocity = mAcceleration * mSpeed;
 }
