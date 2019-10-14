@@ -42,6 +42,7 @@ LasMap::LasMap()
 //    readFile("../VSIMOblig/LASdata/33-1-497-327-20.txt");
     normalizePoints();
     addAllPointsToVertices();
+    constructSurface(10, 10);
     //centerMap();
 
 }
@@ -85,7 +86,7 @@ void LasMap::init()
 void LasMap::draw()
 {
     glBindVertexArray(mVAO);
-    glDrawArrays(GL_POINTS, 0, mVertices.size());
+    glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
 }
 
 void LasMap::printSomePoints()
@@ -272,16 +273,40 @@ std::vector<gsl::Vector3D> LasMap::mapToGrid(const std::vector<gsl::Vector3D> &p
     return outputs;
 }
 
-void LasMap::constructSurface(int x, int z)
+void LasMap::constructSurface(unsigned int xGridSize, unsigned int zGridSize)
 {
-    Vertex v{};
-    for (int i = 0; i < x; ++i)
-    {
-        for (int o = 0; o < z; ++o)
-        {
 
+    mVertices.clear();
+    Vertex v{};
+    for (unsigned int z{0}, i{0}; z < zGridSize - 1; ++z, ++i)
+    {
+        for (unsigned int x{0}; x < xGridSize - 1; ++x, ++i)
+        {
+            v.set_xyz(planePoints[i]); v.set_rgb(0, 1, 0); v.set_uv(0, 0); mVertices.push_back(v);
+            v.set_xyz(planePoints[i+1]); v.set_rgb(1, 0, 0); v.set_uv(0, 0); mVertices.push_back(v);
+            v.set_xyz(planePoints[i+xGridSize + 1]); v.set_rgb(0, 0, 1); v.set_uv(0, 0); mVertices.push_back(v);
+
+            v.set_xyz(planePoints[i]); v.set_rgb(0, 1, 0); v.set_uv(0, 0); mVertices.push_back(v);
+            v.set_xyz(planePoints[i+xGridSize + 1]); v.set_rgb(0, 0, 1); v.set_uv(0, 0); mVertices.push_back(v);
+            v.set_xyz(planePoints[i+xGridSize]); v.set_rgb(1, 0, 0); v.set_uv(0, 0); mVertices.push_back(v);
         }
     }
+
+
+
+
+
+
+
+
+
+//        for (int o = 0; o < z; ++o)
+//        {
+
+
+
+//        }
+
 }
 
 void LasMap::readFile()
