@@ -28,6 +28,8 @@ public:
     std::vector<gsl::Vector3D> planePoints;
     //"../VSIMOblig/LASdata/33-1-497-327-20.las"
 
+    std::vector<gsl::Vector3D> getTrianglePoints();
+
     float xMin;
     float yMin;
     float zMin;

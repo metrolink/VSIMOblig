@@ -75,6 +75,7 @@ bool Vector3D::operator==(const Vector3D &v) const {
     return x == v.x && y == v.y && z == v.z;
 }
 
+
 GLfloat Vector3D::length() const {
     return std::sqrt(std::pow(x, 2.f) + std::pow(y, 2.f) + std::pow(z, 2.f));
 }

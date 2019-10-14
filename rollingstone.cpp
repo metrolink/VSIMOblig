@@ -1,11 +1,12 @@
 #include "rollingstone.h"
 #include "collision.h"
 #include "trianglesurface.h"
+#include "lasmap.h"
 
 RollingStone::RollingStone() {
     collisionSystem = new Collision;
 }
-void RollingStone::update(TriangleSurface *obj) {
+void RollingStone::update(LasMap *obj) {
     auto [hitResult, normal, position] = collisionSystem->getBallNormal(getPosition(), obj);
     if (hitResult) {
         calculateVelocity(normal, position);

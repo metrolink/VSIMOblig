@@ -180,4 +180,26 @@ namespace gsl
         else
             return false;
     }
+
+    Vector3D barycentricCoordinates(const Vector3D &p, const Vector3D &q, const Vector3D &r, const Vector3D &point)
+    {
+        Vector3D temp;
+
+        Vector3D pq = q - p;
+        Vector3D pr = r - p;
+
+        Vector3D normal = Vector3D::cross(pq, pr);
+        GLfloat area = normal.length();
+
+        Vector3D pointP = p - point;
+        Vector3D pointQ = q - point;
+        Vector3D pointR = r - point;
+
+        temp.setX(Vector3D::cross(pointQ, pointR).getY()/area);
+        temp.setY(Vector3D::cross(pointR, pointP).getY()/area);
+        temp.setZ(Vector3D::cross(pointP, pointQ).getY()/area);
+
+        return temp;
+    }
+
 } //namespace

@@ -1,5 +1,6 @@
 #include "collision.h"
 #include "trianglesurface.h"
+#include "lasmap.h"
 Collision::Collision() {
 }
 /**
@@ -27,7 +28,8 @@ vec3 Collision::barycentricCoordinates(const vec3 &point, const vec3 &pointA, co
     baryc.setZ(1.0f - baryc.getX() - baryc.getY());
     return baryc;
 }
-std::tuple<bool, vec3, vec3> Collision::getBallNormal(const vec3 &ballPos, TriangleSurface *surface) {
+std::tuple<bool, vec3, vec3> Collision::getBallNormal(const vec3 &ballPos, LasMap *surface)
+{
     vec3 normal{0};
     vec3 tempPos{0};
     bool hitResult{false};
