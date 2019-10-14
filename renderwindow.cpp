@@ -133,9 +133,9 @@ void RenderWindow::init() {
     ////    mTestMap->scale(0.001f);
     //    mVisualObjects.push_back(mTestMap);
 
-    //    LasMap *mTestMap = new LasMap();
+    LasMap *mTestMap = new LasMap();
     //mTestMap->scale(10);
-    //    mVisualObjects.push_back(mTestMap);
+    mVisualObjects.push_back(mTestMap);
     //    mSurface->createSurface();
     //    mSurface->move(gsl::Vector3D(-3, 0, -3));
     //    mSurface->scale(gsl::Vector3D(3, 1, 3));
