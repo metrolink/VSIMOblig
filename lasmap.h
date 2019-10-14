@@ -21,9 +21,11 @@ public:
     void normalizePoints();
     std::vector<gsl::Vector3D> mapToGrid(const std::vector<gsl::Vector3D>& points, int xGrid, int zGrid, gsl::Vector3D min, gsl::Vector3D max);
 
+    void constructSurface(int x, int z);
     void readFile();
     void readFile(std::string filename);
     std::vector<gsl::Vector3D> points;
+    std::vector<gsl::Vector3D> planePoints;
     //"../VSIMOblig/LASdata/33-1-497-327-20.las"
 
     float xMin;

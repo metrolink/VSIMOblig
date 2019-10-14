@@ -99,27 +99,26 @@ void LasMap::printSomePoints()
 void LasMap::addAllPointsToVertices()
 {
     mVertices.clear();
-    for (auto point : points)
+//    for (auto point : points)
+//    {
+//            Vertex v{};
+//            v.set_xyz(point.x, point.y, point.z);
+//            v.set_rgb(point.x/scaleFactor, point.z/scaleFactor, 0.5);
+//            v.set_uv(0, 0);
+//            mVertices.push_back(v);
+//    }
+
+    //glPointSize(5);
+    planePoints = mapToGrid(points, 10, 10, gsl::Vector3D(xMin, yMin, zMin), gsl::Vector3D(xMax, yMax, zMax));
+    for (auto point : planePoints)
     {
             Vertex v{};
             v.set_xyz(point.x, point.y, point.z);
-            v.set_rgb(point.x/scaleFactor, point.z/scaleFactor, 0.5);
-            v.set_uv(0, 0);
-            mVertices.push_back(v);
-    }
-
-    //glPointSize(5);
-    std::vector<gsl::Vector3D> tempPoints;
-    tempPoints = mapToGrid(points, 10, 10, gsl::Vector3D(xMin, yMin, zMin), gsl::Vector3D(xMax, yMax, zMax));
-    for (auto point : tempPoints)
-    {
-            Vertex v{};
-            v.set_xyz(point.x, point.y + 0.5f, point.z);
             v.set_rgb(0, 1, 0);
             v.set_uv(0, 0);
             mVertices.push_back(v);
     }
-    std::cout << tempPoints.size();
+    std::cout << planePoints.size();
 }
 
 void LasMap::normalizePoints()
@@ -271,6 +270,18 @@ std::vector<gsl::Vector3D> LasMap::mapToGrid(const std::vector<gsl::Vector3D> &p
     });
 
     return outputs;
+}
+
+void LasMap::constructSurface(int x, int z)
+{
+    Vertex v{};
+    for (int i = 0; i < x; ++i)
+    {
+        for (int o = 0; o < z; ++o)
+        {
+
+        }
+    }
 }
 
 void LasMap::readFile()
