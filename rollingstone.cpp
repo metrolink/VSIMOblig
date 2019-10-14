@@ -52,7 +52,7 @@ void RollingStone::calculateVelocity(vec3 normal, double distanceToTriangle) {
     if (distanceToTriangle <= radius()) {
         float Ax = -gravity.y * normal.y;
         float Ay = gravity.y * acos(normal.y);
-        float Az = -gravity.y * normal.z;
+        float Az = -gravity.y * normal.y;
         force.x = Ax;
         force.y = Ay;
         force.z = Az;
