@@ -7,31 +7,6 @@
 
 LasMap::LasMap()
 {
-//    Vertex v{};
-//    v.set_xyz(0, 0, 0);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(0, 0);
-//    mVertices.push_back(v);
-//    v.set_xyz(2, 0, 0);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(1, 0);
-//    mVertices.push_back(v);
-//    v.set_xyz(2, 0, 2);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(1, 1);
-//    mVertices.push_back(v);
-//    v.set_xyz(0, 0, 0);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(0, 0);
-//    mVertices.push_back(v);
-//    v.set_xyz(2, 0, 2);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(1, 1);
-//    mVertices.push_back(v);
-//    v.set_xyz(0, 0, 2);
-//    v.set_rgb(0, 1, 0);
-//    v.set_uv(0, 1);
-//    mVertices.push_back(v);
 
     //printSomePoints();
     readFile("../VSIMOblig/LASdata/fuck.txt");
@@ -39,7 +14,6 @@ LasMap::LasMap()
 //    readFile("../VSIMOblig/LASdata/fuck3.txt");
 //    readFile("../VSIMOblig/LASdata/fuck4.txt");
 //    readFile("../VSIMOblig/LASdata/fuck5.txt");
-//    readFile("../VSIMOblig/LASdata/33-1-497-327-20.txt");
     normalizePoints();
     addAllPointsToVertices();
     //centerMap();

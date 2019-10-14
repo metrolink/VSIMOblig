@@ -13,7 +13,7 @@ public:
     virtual void init() override;
     virtual void draw() override;
 
-    gsl::LASLoader lasloader{"../VSIMOblig/LASdata/33-1-497-327-20.las"};
+    gsl::LASLoader lasloader{};
     void printSomePoints();
     void addAllPointsToVertices();
 
