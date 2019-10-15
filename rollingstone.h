@@ -2,13 +2,16 @@
 #define ROLLINGSTONE_H
 
 #include "octahedronball.h"
+
+class LasMap;
 class Collision;
 class TriangleSurface;
-class RollingStone : public OctahedronBall {
+class RollingStone : public OctahedronBall
+{
 public:
     RollingStone();
     vec3 velocity() const;
-    void update(TriangleSurface *obj);
+    void update(LasMap *obj);
 
 private:
     vec3 mVelocity{0};

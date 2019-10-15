@@ -38,7 +38,8 @@ TriangleSurface::TriangleSurface(std::string filename) : VisualObject() {
     readFile(filename);
     mMatrix.setToIdentity();
 }
-std::vector<gsl::Vector3D> TriangleSurface::getTrianglePoints() {
+std::vector<gsl::Vector3D> TriangleSurface::getTrianglePoints()
+{
     std::vector<gsl::Vector3D> worldPoints;
     for (Vertex vert : mVertices) {
         gsl::Vector4D point4d = getModelMatrix() * vert.XYZ();

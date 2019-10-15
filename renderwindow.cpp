@@ -110,9 +110,13 @@ void RenderWindow::init() {
 //    mSurface2->scale(5);
 //    mVisualObjects.push_back(mSurface2);
 
-//    pawn = new RollingStone;
-//    mVisualObjects.push_back(pawn);
-//    pawn->move(vec3(1.2, 5.5, 1));
+    LasMap *mTestMap = new LasMap();
+    //mTestMap->scale(10);
+    mVisualObjects.push_back(mTestMap);
+
+    pawn = new RollingStone;
+    mVisualObjects.push_back(pawn);
+    pawn->move(vec3(1.2, 5.5, 1));
 
 
 //    gsl::LASLoader *mTestMap = new gsl::LASLoader("../VSIMOblig/LASdata/33-1-497-327-20.las"); ////Get LASLoader to read correct constructor
@@ -120,9 +124,7 @@ void RenderWindow::init() {
 ////    mTestMap->scale(0.001f);
 //    mVisualObjects.push_back(mTestMap);
 
-    LasMap *mTestMap = new LasMap();
-    //mTestMap->scale(10);
-    mVisualObjects.push_back(mTestMap);
+
 
 
 
@@ -199,7 +201,7 @@ void RenderWindow::render() {
         object->draw();
     }
     for (VisualObject *obj : mVisualObjects)
-        if (TriangleSurface *triangle = dynamic_cast<TriangleSurface *>(obj))
+        if (LasMap *triangle = dynamic_cast<LasMap *>(obj))
             pawn->update(triangle);
     //    if (!playerCaught)
     //    {

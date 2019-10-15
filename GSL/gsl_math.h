@@ -37,6 +37,8 @@ namespace gsl
     float distanceToPlane(const Vector3D &point, const Vector3D &normal, const Vector3D &pointInPlane);
     bool withinPlane(const Vector3D &point, Matrix4x4 &modelMatrix, Vector2D upright, Vector2D downleft);
 
+    gsl::Vector3D barycentricCoordinates(const Vector3D &p, const Vector3D &q, const Vector3D &r, const Vector3D &point);
+
 } //namespace
 
 #endif // GSL_MATH_H
